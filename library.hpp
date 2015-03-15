@@ -29,12 +29,11 @@ class GeoLib: public QWidget
     //void about();
     //void actUser(); 
     
-    //void add_cycle_rel();
+    //void ex add_cycle_rel();
   private:
     
     //void createActions;
     //void createMenus;
-    
     QMenuBar *menuBar;
     QMenu *fileMenu;
     QMenu *editMenu;

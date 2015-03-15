@@ -41,11 +41,11 @@ GeoLib::GeoLib(QWidget* parent): QWidget(parent)
    label2 = new QLabel("Data");
    label3 = new QLabel("Status Line");
    button1 = new QPushButton();
-   button1->setIcon(QIcon("cycle.jpg"));
+   button1->setIcon(QIcon("/Users/Martin/Desktop/library/cycle.jpg"));
    button2 = new QPushButton();
-   button2->setIcon(QIcon("Infinity.png"));
+   button2->setIcon(QIcon("/Users/Martin/Desktop/library/Infinity.png"));
    button3 = new QPushButton();
-   button3->setIcon(QIcon("realline.png"));
+   button3->setIcon(QIcon("/Users/Martin/Desktop/library/realline.png"));
    graphical = new QGraphicsView();
    line = new QLineEdit();
    text = new QTextEdit();
