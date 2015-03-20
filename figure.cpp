@@ -1,4 +1,4 @@
-#line 3617 "figure.nw"
+#line 3991 "figure.nw"
 // The library to operate cycles in non-Euclidean geometry
 //
 //  Copyright (C) 2004-2014 Vladimir V. Kisil
@@ -16,7 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#line 1230 "figure.nw"
+#line 1365 "figure.nw"
 #include "figure.h"
 
 GINAC_IMPLEMENT_REGISTERED_CLASS_OPT(cycle2D_data, basic,
@@ -36,44 +36,44 @@ print_func<print_tree>(&cycle_relation::do_print_tree))
 GINAC_IMPLEMENT_REGISTERED_CLASS_OPT(figure, basic,
 									 print_func<print_dflt>(&figure::do_print))
 
-#line 1260 "figure.nw"
-const ex epsilon=GiNaC::pow(10,-Digits+4);
+#line 1395 "figure.nw"
+const ex epsilon=GiNaC::pow(10,3-Digits);
 
-#line 1264 "figure.nw"
-bool is_almost_zero1(const ex & x)
+#line 1399 "figure.nw"
+bool is_less_than_epsilon(const ex & x)
 {
 	if (is_a<numeric>(x))
-		return (ex_to<numeric>(x+epsilon).is_positive() && ex_to<numeric>(epsilon-x).is_positive());
+		return ( abs(x).evalf() < epsilon ) ;
 	else
 		return x.is_zero();
 }
 
-#line 3421 "figure.nw"
+#line 3795 "figure.nw"
 ex cycle_orthogonal(const ex & C1, const ex & C2)
 {
 	return lst((ex)lst(ex_to<cycle2D>(C1).is_orthogonal(ex_to<cycle2D>(C2))));
 }
 
-#line 3428 "figure.nw"
+#line 3802 "figure.nw"
 ex cycle_f_orthogonal(const ex & C1, const ex & C2)
 {
 	return lst( (ex)lst(ex_to<cycle2D>(C1).is_f_orthogonal(ex_to<cycle2D>(C2))));
 }
 
-#line 3435 "figure.nw"
+#line 3809 "figure.nw"
 ex cycle_adifferent(const ex & C1, const ex & C2)
 {
 	return lst( (ex)lst(cycle2D_data(C1).is_almost_equal(ex_to<basic>(cycle2D_data(C2)),true)? 0: 1));
 }
 
 
-#line 1279 "figure.nw"
+#line 1414 "figure.nw"
 cycle2D_data::cycle2D_data() : k(), l(), m()
 {
 	;
 }
 
-#line 1286 "figure.nw"
+#line 1421 "figure.nw"
 cycle2D_data::cycle2D_data(const ex & C)
 {
 	if (is_a<cycle2D>(C)) {
@@ -89,7 +89,7 @@ cycle2D_data::cycle2D_data(const ex & C)
 
 }
 
-#line 1303 "figure.nw"
+#line 1438 "figure.nw"
 cycle2D_data::cycle2D_data(const ex & k1, const ex l1, const ex &m1, bool normalize) : k(k1), l(l1), m(m1)
 {
 	if (normalize) {
@@ -114,13 +114,13 @@ cycle2D_data::cycle2D_data(const ex & k1, const ex l1, const ex &m1, bool normal
 	}
 }
 
-#line 1329 "figure.nw"
+#line 1464 "figure.nw"
 return_type_t cycle2D_data::return_type_tinfo() const
 {
 	return make_return_type_t<cycle2D_data>();
 }
 
-#line 1336 "figure.nw"
+#line 1471 "figure.nw"
 int cycle2D_data::compare_same_type(const basic &other) const
 {
        GINAC_ASSERT(is_a<cycle2D_data>(other));
@@ -128,7 +128,7 @@ int cycle2D_data::compare_same_type(const basic &other) const
 }
 
 
-#line 1345 "figure.nw"
+#line 1480 "figure.nw"
 void cycle2D_data::do_print(const print_dflt & con, unsigned level) const
 {
 	con.s << "("; \
@@ -140,7 +140,7 @@ void cycle2D_data::do_print(const print_dflt & con, unsigned level) const
 	con.s << ")";
 }
 
-#line 1358 "figure.nw"
+#line 1493 "figure.nw"
 void cycle2D_data::archive(archive_node &n) const
 {
 	inherited::archive(n);
@@ -149,7 +149,7 @@ void cycle2D_data::archive(archive_node &n) const
 	n.add_ex("m-val", m);
 }
 
-#line 1368 "figure.nw"
+#line 1503 "figure.nw"
 void cycle2D_data::read_archive(const archive_node &n, lst &sym_lst)
 {
 	inherited::read_archive(n, sym_lst);
@@ -158,16 +158,49 @@ void cycle2D_data::read_archive(const archive_node &n, lst &sym_lst)
 	n.find_ex("m-val", m, sym_lst);
 }
 
-#line 1378 "figure.nw"
+#line 1513 "figure.nw"
 GINAC_BIND_UNARCHIVER(cycle2D_data);
 
-#line 1382 "figure.nw"
+#line 1517 "figure.nw"
+ex cycle2D_data::op(size_t i) const
+{
+ GINAC_ASSERT(i<nops());
+	switch(i) {
+	case 0:
+		return k;
+	case 1:
+		return l;
+	case 2:
+		return m;
+	default:
+		throw(std::invalid_argument("cycle2D_data::op(): requested operand out of the range (3)"));
+	}
+}
+
+#line 1534 "figure.nw"
+ex & cycle2D_data::let_op(size_t i)
+{
+	ensure_if_modifiable();
+	GINAC_ASSERT(i<nops());
+	switch(i) {
+	case 0:
+		return k;
+	case 1:
+		return l;
+	case 2:
+		return m;
+	default:
+		throw(std::invalid_argument("cycle2D_data::let_op(): requested operand out of the range (3)"));
+	}
+}
+
+#line 1552 "figure.nw"
 ex cycle2D_data::get_cycle2D(const ex & metr) const
 {
 	return cycle2D(k,l,m,metr);
 }
 
-#line 1389 "figure.nw"
+#line 1559 "figure.nw"
 bool cycle2D_data::is_equal(const basic & other, bool projectively) const
 {
 	if (not is_a<cycle2D_data>(other))
@@ -195,7 +228,7 @@ bool cycle2D_data::is_equal(const basic & other, bool projectively) const
 			return false;
 
 
-#line 1418 "figure.nw"
+#line 1588 "figure.nw"
 	for (int i=0; i<2; i++)
 		if (projectively) {
 			// search the the first non-zero coefficient
@@ -212,7 +245,7 @@ bool cycle2D_data::is_equal(const basic & other, bool projectively) const
 	return true;
 }
 
-#line 1436 "figure.nw"
+#line 1606 "figure.nw"
 bool cycle2D_data::is_almost_equal(const basic & other, bool projectively) const
 {
 	if (not is_a<cycle2D_data>(other))
@@ -222,10 +255,10 @@ bool cycle2D_data::is_almost_equal(const basic & other, bool projectively) const
 
 	if (projectively) {
 		// Check that coefficients are scalar multiples of other
-		if (! (is_almost_zero1(m*o.get_k()-o.get_m()*k)))
+		if (! (is_less_than_epsilon(m*o.get_k()-o.get_m()*k)))
 			return false;
 		// Set up coefficients for proportionality
-		if (is_almost_zero1(get_k())) {
+		if (is_less_than_epsilon(get_k())) {
 			factor=get_m();
 			ofactor=o.get_m();
 		} else {
@@ -235,12 +268,12 @@ bool cycle2D_data::is_almost_equal(const basic & other, bool projectively) const
 
 	} else
 		// Check the exact equality of coefficients
-		if (! (is_almost_zero1((get_k()-o.get_k()))
-				 && is_almost_zero1(get_m()-o.get_m())))
+		if (! (is_less_than_epsilon((get_k()-o.get_k()))
+				 && is_less_than_epsilon(get_m()-o.get_m())))
 			return false;
 
 
-#line 1465 "figure.nw"
+#line 1635 "figure.nw"
 	for (int i=0; i<2; i++)
 		if (projectively) {
 			// search the the first non-zero coefficient
@@ -248,27 +281,27 @@ bool cycle2D_data::is_almost_equal(const basic & other, bool projectively) const
 				factor=get_l(i);
 				ofactor=o.get_l(i);
 			} else
-				if (! is_almost_zero1(get_l(i)*ofactor-o.get_l(i)*factor))
+				if (! is_less_than_epsilon(get_l(i)*ofactor-o.get_l(i)*factor))
 					return false;
 		} else
-			if (! is_almost_zero1(get_l(i)-o.get_l(i)))
+			if (! is_less_than_epsilon(get_l(i)-o.get_l(i)))
 				return false;
 
 	return true;
 }
 
-#line 1483 "figure.nw"
+#line 1653 "figure.nw"
 cycle2D_data cycle2D_data::subs(const ex & e, unsigned options) const
 {
 	return cycle2D_data(k.subs(e,options),l.subs(e,options),m.subs(e,options),false);
 }
-#line 1489 "figure.nw"
+#line 1659 "figure.nw"
 ex cycle2D_data::subs(const exmap & em, unsigned options) const
 {
 	return cycle2D_data(k.subs(em,options),l.subs(em,options),m.subs(em,options),false);
 }
 
-#line 1496 "figure.nw"
+#line 1666 "figure.nw"
 ex cycle2D_data::num_normalize() const
 {
 	if (! (is_a<numeric>(k) && is_a<numeric>(m)
@@ -291,37 +324,37 @@ ex cycle2D_data::num_normalize() const
 	r=max(r,abs(l0));
 	r=max(r,abs(l1));
 
-	if (is_almost_zero1(r))
+	if (is_less_than_epsilon(r))
 		return cycle2D_data(k,l,m,true);
-	k1/=r; k1=(is_almost_zero1(k1)?0:k1);
-	m1/=r; m1=(is_almost_zero1(m1)?0:m1);
-	l0/=r; l0=(is_almost_zero1(l0)?0:l0);
-	l1/=r; l1=(is_almost_zero1(l1)?0:l1);
+	k1/=r; k1=(is_less_than_epsilon(k1)?0:k1);
+	m1/=r; m1=(is_less_than_epsilon(m1)?0:m1);
+	l0/=r; l0=(is_less_than_epsilon(l0)?0:l0);
+	l1/=r; l1=(is_less_than_epsilon(l1)?0:l1);
 
 	return cycle2D_data(k1,indexed(matrix(1, 2, lst(l0,l1)), l.op(1)),m1);
 }
 
-#line 1534 "figure.nw"
+#line 1704 "figure.nw"
 cycle_relation::cycle_relation() : parkey()
 {
   rel = cycle_orthogonal;
   use_cycle_metric = true;
 }
 
-#line 1542 "figure.nw"
+#line 1712 "figure.nw"
 cycle_relation::cycle_relation(const ex & k, PCR r, bool cm) {
 	parkey = k;
 	rel = r;
 	use_cycle_metric = cm;
 }
 
-#line 1550 "figure.nw"
+#line 1720 "figure.nw"
 return_type_t cycle_relation::return_type_tinfo() const
 {
 	return make_return_type_t<cycle_relation>();
 }
 
-#line 1557 "figure.nw"
+#line 1727 "figure.nw"
 int cycle_relation::compare_same_type(const basic &other) const
 {
        GINAC_ASSERT(is_a<cycle_relation>(other));
@@ -336,7 +369,7 @@ int cycle_relation::compare_same_type(const basic &other) const
 	return 1;*/
 }
 
-#line 1575 "figure.nw"
+#line 1745 "figure.nw"
 void cycle_relation::archive(archive_node &n) const
 {
 	inherited::archive(n);
@@ -362,7 +395,7 @@ void cycle_relation::archive(archive_node &n) const
 									" implemented"));
 }
 
-#line 1602 "figure.nw"
+#line 1772 "figure.nw"
 void cycle_relation::read_archive(const archive_node &n, lst &sym_lst)
 {
 	ex e;
@@ -395,10 +428,10 @@ void cycle_relation::read_archive(const archive_node &n, lst &sym_lst)
 									" relation"));
 }
 
-#line 1636 "figure.nw"
+#line 1806 "figure.nw"
 GINAC_BIND_UNARCHIVER(cycle_relation);
 
-#line 1640 "figure.nw"
+#line 1810 "figure.nw"
 ex cycle_relation::rel_to_parent(const cycle2D_data & C1, const ex & pmetric, const ex & cmetric,
 								 const exhashmap<cycle2D_node> & N) const
 {
@@ -414,7 +447,7 @@ ex cycle_relation::rel_to_parent(const cycle2D_data & C1, const ex & pmetric, co
 	return res;
 }
 
-#line 1657 "figure.nw"
+#line 1827 "figure.nw"
 void cycle_relation::do_print(const print_dflt & con, unsigned level) const
 {
 	con.s << parkey << (use_cycle_metric? "|" : "/");
@@ -437,7 +470,7 @@ void cycle_relation::do_print(const print_dflt & con, unsigned level) const
 		con.s << "u"; // unknown type of relations
 }
 
-#line 1681 "figure.nw"
+#line 1851 "figure.nw"
 void cycle_relation::do_print_tree(const print_tree & con, unsigned level) const
 {
 	//	inherited::do_print_tree(con,level);
@@ -445,31 +478,56 @@ void cycle_relation::do_print_tree(const print_tree & con, unsigned level) const
 	//	con.s <<  std::string(level+con.delta_indent, ' ') << (int)rel <<endl;
 }
 
-#line 1695 "figure.nw"
+#line 1860 "figure.nw"
+ex cycle_relation::op(size_t i) const
+{
+ GINAC_ASSERT(i<nops());
+	switch(i) {
+	case 0:
+		return parkey;
+	default:
+		throw(std::invalid_argument("cycle_relation::op(): requested operand out of the range (1)"));
+	}
+}
+
+#line 1873 "figure.nw"
+ex & cycle_relation::let_op(size_t i)
+{
+	ensure_if_modifiable();
+	GINAC_ASSERT(i<nops());
+	switch(i) {
+	case 0:
+		return parkey;
+	default:
+		throw(std::invalid_argument("cycle_relation::let_op(): requested operand out of the range (1)"));
+	}
+}
+ 
+#line 1892 "figure.nw"
 subfigure::subfigure() : inherited()
 {
 }
 
-#line 1701 "figure.nw"
+#line 1898 "figure.nw"
 subfigure::subfigure(const ex & F, const ex & l) {
 	parlist = ex_to<lst>(l);
 	subf = F;
 }
 
-#line 1708 "figure.nw"
+#line 1905 "figure.nw"
 return_type_t subfigure::return_type_tinfo() const
 {
 	return make_return_type_t<subfigure>();
 }
 
-#line 1715 "figure.nw"
+#line 1912 "figure.nw"
 int subfigure::compare_same_type(const basic &other) const
 {
        GINAC_ASSERT(is_a<subfigure>(other));
 	   return inherited::compare_same_type(other);
 }
 
-#line 1726 "figure.nw"
+#line 1923 "figure.nw"
 void subfigure::archive(archive_node &n) const
 {
 	inherited::archive(n);
@@ -477,7 +535,7 @@ void subfigure::archive(archive_node &n) const
 	n.add_ex("subf", ex_to<figure>(subf));
 }
 
-#line 1735 "figure.nw"
+#line 1932 "figure.nw"
 void subfigure::read_archive(const archive_node &n, lst &sym_lst)
 {
 	ex e;
@@ -496,10 +554,10 @@ void subfigure::read_archive(const archive_node &n, lst &sym_lst)
 									" the archive"));
 }
 
-#line 1755 "figure.nw"
+#line 1952 "figure.nw"
 GINAC_BIND_UNARCHIVER(subfigure);
 
-#line 1759 "figure.nw"
+#line 1956 "figure.nw"
 void subfigure::do_print(const print_dflt & con, unsigned level) const
 {
 	con.s << "subfig( " ;
@@ -508,18 +566,18 @@ void subfigure::do_print(const print_dflt & con, unsigned level) const
 	con.s << ")" ;
 }
 
-#line 1773 "figure.nw"
+#line 1970 "figure.nw"
 cycle2D_node::cycle2D_node() 
 {
 	generation=0;
 }
 
-#line 1780 "figure.nw"
+#line 1977 "figure.nw"
 cycle2D_node::cycle2D_node(const ex & C, int g) 
 {
 	generation=g;
 	
-#line 1788 "figure.nw"
+#line 1985 "figure.nw"
 	if (is_a<cycle2D_node>(C)) {
 		cycles=ex_to<lst>(ex_to<cycle2D_node>(C).get_cycles());
 		generation = ex_to<cycle2D_node>(C).get_generation();
@@ -527,7 +585,7 @@ cycle2D_node::cycle2D_node(const ex & C, int g)
 		parents = ex_to<cycle2D_node>(C).get_parents();
 	} else
 		
-#line 1807 "figure.nw"
+#line 2004 "figure.nw"
  	if (is_a<lst>(C)) {
 		for (lst::const_iterator it = ex_to<lst>(C).begin(); it != ex_to<lst>(C).end(); ++it)
 			if ( is_a<cycle2D_data>(*it) || is_a<cycle2D>(*it))
@@ -545,15 +603,15 @@ cycle2D_node::cycle2D_node(const ex & C, int g)
 									" cycle2D_node or list of cycle2D_data"));
 
 
-#line 1784 "figure.nw"
+#line 1981 "figure.nw"
 }
 
-#line 1798 "figure.nw"
+#line 1995 "figure.nw"
 cycle2D_node::cycle2D_node(const ex & C, int g, const lst & par) 
 {
 	generation=g;
 	
-#line 1807 "figure.nw"
+#line 2004 "figure.nw"
  	if (is_a<lst>(C)) {
 		for (lst::const_iterator it = ex_to<lst>(C).begin(); it != ex_to<lst>(C).end(); ++it)
 			if ( is_a<cycle2D_data>(*it) || is_a<cycle2D>(*it))
@@ -570,22 +628,22 @@ cycle2D_node::cycle2D_node(const ex & C, int g, const lst & par)
 		throw(std::invalid_argument("the cyle2D parameters must be either cycle2D, cycle2D_data,"
 									" cycle2D_node or list of cycle2D_data"));
 
-#line 1802 "figure.nw"
+#line 1999 "figure.nw"
 	
-#line 1825 "figure.nw"
+#line 2022 "figure.nw"
 	GINAC_ASSERT(is_a<lst>(par));
 	parents = ex_to<lst>(par);
 
-#line 1803 "figure.nw"
+#line 2000 "figure.nw"
 }
 
-#line 1830 "figure.nw"
+#line 2027 "figure.nw"
 cycle2D_node::cycle2D_node(const ex & C, int g, const lst & par, const lst & ch)
 {
 	generation=g;
 	children=ch;
 	
-#line 1807 "figure.nw"
+#line 2004 "figure.nw"
  	if (is_a<lst>(C)) {
 		for (lst::const_iterator it = ex_to<lst>(C).begin(); it != ex_to<lst>(C).end(); ++it)
 			if ( is_a<cycle2D_data>(*it) || is_a<cycle2D>(*it))
@@ -602,29 +660,93 @@ cycle2D_node::cycle2D_node(const ex & C, int g, const lst & par, const lst & ch)
 		throw(std::invalid_argument("the cyle2D parameters must be either cycle2D, cycle2D_data,"
 									" cycle2D_node or list of cycle2D_data"));
 
-#line 1835 "figure.nw"
+#line 2032 "figure.nw"
 	
-#line 1825 "figure.nw"
+#line 2022 "figure.nw"
 	GINAC_ASSERT(is_a<lst>(par));
 	parents = ex_to<lst>(par);
 
-#line 1836 "figure.nw"
+#line 2033 "figure.nw"
 }
 
-#line 1840 "figure.nw"
+#line 2037 "figure.nw"
+cycle2D_node::cycle2D_node(const ex & C, int g, const lst & par, const lst & ch, string ca)
+{
+	generation=g;
+	children=ch;
+	custom_asy=ca;
+	
+#line 2004 "figure.nw"
+ 	if (is_a<lst>(C)) {
+		for (lst::const_iterator it = ex_to<lst>(C).begin(); it != ex_to<lst>(C).end(); ++it)
+			if ( is_a<cycle2D_data>(*it) || is_a<cycle2D>(*it))
+				cycles.append(cycle2D_data(*it));
+			else
+				throw(std::invalid_argument("the parameter is list of something which is not"
+											" cycle2D_data"));
+	} else if (is_a<cycle2D_data>(C)) {
+		cycles = lst(C);
+	} else if (is_a<cycle2D>(C)) {
+		cycles=lst(cycle2D_data(ex_to<cycle2D>(C).get_k(), ex_to<cycle2D>(C).get_l(),
+								ex_to<cycle2D>(C).get_m()));
+	} else
+		throw(std::invalid_argument("the cyle2D parameters must be either cycle2D, cycle2D_data,"
+									" cycle2D_node or list of cycle2D_data"));
+
+#line 2043 "figure.nw"
+	
+#line 2022 "figure.nw"
+	GINAC_ASSERT(is_a<lst>(par));
+	parents = ex_to<lst>(par);
+
+#line 2044 "figure.nw"
+}
+
+#line 2048 "figure.nw"
 return_type_t cycle2D_node::return_type_tinfo() const
 {
 	return make_return_type_t<cycle2D_node>();
 }
 
-#line 1847 "figure.nw"
+#line 2055 "figure.nw"
+ex cycle2D_node::op(size_t i) const
+{
+	GINAC_ASSERT(i<nops());
+	size_t ncyc=cycles.nops(), nchil=children.nops(), npar=parents.nops(); 
+	if ( i < ncyc)
+		return cycles.op(i);
+	else if ( i < ncyc + nchil)
+		return children.op(i-ncyc);
+	else if ( i < ncyc + nchil + npar)
+		return parents.op(i-ncyc-nchil);
+	else
+		throw(std::invalid_argument("cycle2D_node::op(): requested operand out of the range"));
+}
+
+#line 2071 "figure.nw"
+ex & cycle2D_node::let_op(size_t i)
+{
+	ensure_if_modifiable();
+	GINAC_ASSERT(i<nops());
+	size_t ncyc=cycles.nops(), nchil=children.nops(), npar=parents.nops(); 
+	if ( i < ncyc)
+		return cycles.let_op(i);
+	else if ( i < ncyc + nchil)
+		return children.let_op(i-ncyc);
+	else if ( i < ncyc + nchil + npar)
+		return parents.let_op(i-ncyc-nchil);
+	else
+		throw(std::invalid_argument("cycle2D_node::let_op(): requested operand out of the range"));
+}
+
+#line 2088 "figure.nw"
 int cycle2D_node::compare_same_type(const basic &other) const
 {
        GINAC_ASSERT(is_a<cycle2D_node>(other));
 	   return inherited::compare_same_type(other);
 }
 
-#line 1855 "figure.nw"
+#line 2096 "figure.nw"
 ex cycle2D_node::get_cycle2D(const ex & metr) const
 {
 	lst res;
@@ -634,12 +756,12 @@ ex cycle2D_node::get_cycle2D(const ex & metr) const
 	return res;
 }
 
-#line 1866 "figure.nw"
+#line 2107 "figure.nw"
 void cycle2D_node::set_cycles(const ex & C)
 {
 	cycles.remove_all();
 	
-#line 1807 "figure.nw"
+#line 2004 "figure.nw"
  	if (is_a<lst>(C)) {
 		for (lst::const_iterator it = ex_to<lst>(C).begin(); it != ex_to<lst>(C).end(); ++it)
 			if ( is_a<cycle2D_data>(*it) || is_a<cycle2D>(*it))
@@ -656,16 +778,16 @@ void cycle2D_node::set_cycles(const ex & C)
 		throw(std::invalid_argument("the cyle2D parameters must be either cycle2D, cycle2D_data,"
 									" cycle2D_node or list of cycle2D_data"));
 
-#line 1870 "figure.nw"
+#line 2111 "figure.nw"
 }
 
-#line 1874 "figure.nw"
+#line 2115 "figure.nw"
 void cycle2D_node::append_cycle(const ex & k, const ex & l, const ex & m)
 {
 	cycles.append(cycle2D_data(k,l,m));
 }
 
-#line 1881 "figure.nw"
+#line 2122 "figure.nw"
 void cycle2D_node::append_cycle(const ex & C)
 {
 	if (is_a<cycle2D>(C))
@@ -678,13 +800,13 @@ void cycle2D_node::append_cycle(const ex & C)
 									" either cycle2D or cycle2D_data"));
 }
 
-#line 1895 "figure.nw"
+#line 2136 "figure.nw"
 lst cycle2D_node::get_parents() const
 {
 	return parents;
 }
 
-#line 1902 "figure.nw"
+#line 2143 "figure.nw"
 lst cycle2D_node::get_parent_keys() const
 {
 	lst pkeys;
@@ -697,7 +819,7 @@ lst cycle2D_node::get_parent_keys() const
 	return pkeys;
 }
 
-#line 1916 "figure.nw"
+#line 2157 "figure.nw"
 void cycle2D_node::do_print(const print_dflt & con, unsigned level) const
 {
 	con.s << '{';
@@ -729,7 +851,7 @@ void cycle2D_node::do_print(const print_dflt & con, unsigned level) const
 	con.s << ")" << endl;
 }
 
-#line 1949 "figure.nw"
+#line 2190 "figure.nw"
 void cycle2D_node::do_print_tree(const print_tree & con, unsigned level) const
 {
 	for (lst::const_iterator it = cycles.begin(); it != cycles.end(); ++it)
@@ -741,7 +863,7 @@ void cycle2D_node::do_print_tree(const print_tree & con, unsigned level) const
 	parents.print(con,level+2*con.delta_indent);
 }
 
-#line 1962 "figure.nw"
+#line 2203 "figure.nw"
 void cycle2D_node::remove_child(const ex & other)
 {
 	lst nchildren;
@@ -751,7 +873,7 @@ void cycle2D_node::remove_child(const ex & other)
 	children=nchildren;
 }
 
-#line 1973 "figure.nw"
+#line 2214 "figure.nw"
 cycle2D_node cycle2D_node::subs(const ex & e, unsigned options) const
 {
 	exmap em;
@@ -764,16 +886,16 @@ cycle2D_node cycle2D_node::subs(const ex & e, unsigned options) const
 	} else
 		throw(std::invalid_argument("cycle::subs(): the parameter should be a relational or a lst"));
 
-	return cycle2D_node(cycles.subs(em, options), generation, parents, children);
+	return cycle2D_node(cycles.subs(em, options), generation, parents, children, custom_asy);
 }
 
-#line 1990 "figure.nw"
+#line 2231 "figure.nw"
 ex cycle2D_node::subs(const exmap & em, unsigned options) const
 {
-	return cycle2D_node(cycles.subs(em, options), generation, parents, children);
+	return cycle2D_node(cycles.subs(em, options), generation, parents, children, custom_asy);
 }
 
-#line 1997 "figure.nw"
+#line 2238 "figure.nw"
 void cycle2D_node::archive(archive_node &n) const
 {
 	inherited::archive(n);
@@ -790,7 +912,7 @@ void cycle2D_node::archive(archive_node &n) const
 			n.add_ex("par", ex_to<cycle_relation>(*it));
 	}
 
-#line 2015 "figure.nw"
+#line 2256 "figure.nw"
 	bool neg_generation=(generation<0);
 	n.add_bool("neg_generation", neg_generation);
 	if (neg_generation)
@@ -799,7 +921,7 @@ void cycle2D_node::archive(archive_node &n) const
 		n.add_unsigned("abs_generation", generation);
 }
 
-#line 2025 "figure.nw"
+#line 2266 "figure.nw"
 void cycle2D_node::read_archive(const archive_node &n, lst &sym_lst)
 {
 	inherited::read_archive(n, sym_lst);
@@ -835,7 +957,7 @@ void cycle2D_node::read_archive(const archive_node &n, lst &sym_lst)
 		}
 	}
 
-#line 2062 "figure.nw"
+#line 2303 "figure.nw"
 	bool neg_generation;
 	n.find_bool("neg_generation", neg_generation);
 	unsigned int abs_generation;
@@ -846,13 +968,12 @@ void cycle2D_node::read_archive(const archive_node &n, lst &sym_lst)
 		generation = abs_generation;
 }
 
-#line 2074 "figure.nw"
+#line 2315 "figure.nw"
 GINAC_BIND_UNARCHIVER(cycle2D_node);
 
-#line 2083 "figure.nw"
+#line 2324 "figure.nw"
 figure::figure() : inherited(), k(realsymbol("k")), l(realsymbol("l")), n(realsymbol("n")), m(realsymbol("m"))
 {
-	//	flags &= ~status_flags::expanded;
 	infinity=symbol("infty","\\infty");
 	real_line=symbol("R","\\mathbf{R}");
 	point_metric = clifford_unit(varidx(real_line, 2), indexed(-(new tensdelta)->setflag(status_flags::dynallocated),
@@ -860,29 +981,28 @@ figure::figure() : inherited(), k(realsymbol("k")), l(realsymbol("l")), n(realsy
 	cycle_metric = clifford_unit(varidx(real_line, 2), indexed(-(new tensdelta)->setflag(status_flags::dynallocated),
 								varidx(symbol("ic"), 2), varidx(symbol("jc"), 2)));
 	
-#line 2098 "figure.nw"
+#line 2338 "figure.nw"
 	nodes[infinity] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(0))),
 																   varidx(infinity, 2)),numeric(1)),INFINITY_GEN);
  
-#line 2093 "figure.nw"
+#line 2333 "figure.nw"
 	
-#line 2103 "figure.nw"
+#line 2343 "figure.nw"
 	nodes[real_line] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(1))),
 																	varidx(real_line, 2)),numeric(0)),REAL_LINE_GEN);
 
-#line 2094 "figure.nw"
+#line 2334 "figure.nw"
 }
 
-#line 2108 "figure.nw"
+#line 2348 "figure.nw"
 figure::figure(const ex & Mp, const ex & Mc) : inherited(), k(realsymbol("k")), l(realsymbol("l")),
 	n(realsymbol("n")), m(realsymbol("m"))
 {
-//	flags &= ~status_flags::expanded;
 	infinity=symbol("infty","\\infty");
 	real_line=symbol("R","\\mathbf{R}");
 	bool inf_missing=true, R_missing=true;
 	
-#line 2120 "figure.nw"
+#line 2359 "figure.nw"
 if (is_a<clifford>(Mp)) {
 	point_metric = clifford_unit(varidx(real_line, 2), ex_to<clifford>(Mp).get_metric());
  } else if (is_a<matrix>(Mp) || is_a<tensor>(Mp)) {
@@ -890,13 +1010,13 @@ if (is_a<clifford>(Mp)) {
  } else if (is_a<indexed>(Mp)) {
 	point_metric = clifford_unit(varidx(real_line, 2), Mp);
 
-#line 2132 "figure.nw"
+#line 2371 "figure.nw"
 	} else if (is_a<realsymbol>(Mp) || is_a<numeric>(Mp)) {
 		point_metric=clifford_unit(varidx(real_line, 2), indexed(diag_matrix(lst(-1,Mp)), varidx(symbol("i"), 2), varidx(symbol("j"), 2)));
 	}
 
 
-#line 2138 "figure.nw"
+#line 2377 "figure.nw"
 	else if (is_a<figure>(Mp)) {
 		point_metric = ex_to<figure>(Mp).get_point_metric();
 		cycle_metric = ex_to<figure>(Mp).get_cycle_metric();
@@ -904,7 +1024,7 @@ if (is_a<clifford>(Mp)) {
 		for (exhashmap<cycle2D_node>::const_iterator it = nnodes.begin(); it != nnodes.end(); ++it) {
 			nodes[it->first]=it->second;
 			
-#line 2149 "figure.nw"
+#line 2388 "figure.nw"
 			if (it->second.get_generation() == REAL_LINE_GEN) {
 				real_line = it->first;
 				R_missing=false;
@@ -914,10 +1034,10 @@ if (is_a<clifford>(Mp)) {
 				inf_missing=false;
 			}
 
-#line 2145 "figure.nw"
+#line 2384 "figure.nw"
 			}
 
-#line 2160 "figure.nw"
+#line 2399 "figure.nw"
 	} else
 			throw(std::invalid_argument("figure::figure(const ex &, const ex &):"
 										" the first parameter shall be a figure, "
@@ -926,14 +1046,14 @@ if (is_a<clifford>(Mp)) {
 										"a real symbol (to denote the signature of metric) "
 										"or a numeric -1, 0, 1 to specify EPH geometries"));
 	
-#line 2172 "figure.nw"
+#line 2411 "figure.nw"
 	if (Mc.is_zero()) {
 		cycle_metric = clifford_unit(varidx(real_line, 2), indexed(diag_matrix(
 												lst(ex_to<clifford>(point_metric).get_metric(idx(0,2),idx(0,2)),
 													-jump_fnct(-ex_to<clifford>(point_metric).get_metric(idx(1,2),idx(1,2))))),
 													varidx(symbol("ic"), 2), varidx(symbol("jc"), 2)));
 
-#line 2181 "figure.nw"
+#line 2420 "figure.nw"
 	} else if (is_a<clifford>(Mc)) {
 		cycle_metric = clifford_unit(varidx(real_line, 2), ex_to<clifford>(Mc).get_metric());
 	} else if (is_a<matrix>(Mc) || is_a<tensor>(Mc)) {
@@ -947,7 +1067,7 @@ if (is_a<clifford>(Mp)) {
 	}
 
 
-#line 2195 "figure.nw"
+#line 2434 "figure.nw"
 	else
 			throw(std::invalid_argument("figure::figure(const ex &, const ex &):"
 										" the second parameter"
@@ -957,33 +1077,31 @@ if (is_a<clifford>(Mp)) {
 										"a real symbol (to denote the signature of metric) "
 										"or a numeric -1, 0, 1 to specify EPH geometries"));
 
-#line 2207 "figure.nw"
+#line 2446 "figure.nw"
 	
-#line 2212 "figure.nw"
+#line 2451 "figure.nw"
 	if (inf_missing)
 		
-#line 2098 "figure.nw"
+#line 2338 "figure.nw"
 	nodes[infinity] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(0))),
 																   varidx(infinity, 2)),numeric(1)),INFINITY_GEN);
  
 
-#line 2215 "figure.nw"
+#line 2454 "figure.nw"
 	if (R_missing)
 		
-#line 2103 "figure.nw"
+#line 2343 "figure.nw"
 	nodes[real_line] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(1))),
 																	varidx(real_line, 2)),numeric(0)),REAL_LINE_GEN);
 
 
-#line 2208 "figure.nw"
+#line 2447 "figure.nw"
 }
 
-#line 2220 "figure.nw"
+#line 2459 "figure.nw"
 figure::figure(const ex & Mp, const ex & Mc, const exhashmap<cycle2D_node> & N):
 inherited(), k(realsymbol("k")), l(realsymbol("l")), n(realsymbol("n")), m(realsymbol("m"))
 {
-//	flags &= ~status_flags::expanded;
-
 	infinity=symbol("infty","\\infty");
 	real_line=symbol("R","\\mathbf{R}");
 	bool inf_missing=true, R_missing=true;
@@ -995,11 +1113,11 @@ inherited(), k(realsymbol("k")), l(realsymbol("l")), n(realsymbol("n")), m(reals
 									" the point_metric and cycle_metric should be clifford_unit. "));
 
 
-#line 2238 "figure.nw"
+#line 2475 "figure.nw"
 	for (exhashmap<cycle2D_node>::const_iterator it = N.begin(); it != N.end(); ++it) {
 		nodes[it->first]=it->second;
 		
-#line 2149 "figure.nw"
+#line 2388 "figure.nw"
 			if (it->second.get_generation() == REAL_LINE_GEN) {
 				real_line = it->first;
 				R_missing=false;
@@ -1009,37 +1127,36 @@ inherited(), k(realsymbol("k")), l(realsymbol("l")), n(realsymbol("n")), m(reals
 				inf_missing=false;
 			}
 
-#line 2241 "figure.nw"
+#line 2478 "figure.nw"
 	}
 	
-#line 2212 "figure.nw"
+#line 2451 "figure.nw"
 	if (inf_missing)
 		
-#line 2098 "figure.nw"
+#line 2338 "figure.nw"
 	nodes[infinity] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(0))),
 																   varidx(infinity, 2)),numeric(1)),INFINITY_GEN);
  
 
-#line 2215 "figure.nw"
+#line 2454 "figure.nw"
 	if (R_missing)
 		
-#line 2103 "figure.nw"
+#line 2343 "figure.nw"
 	nodes[real_line] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(1))),
 																	varidx(real_line, 2)),numeric(0)),REAL_LINE_GEN);
 
 
-#line 2243 "figure.nw"
+#line 2480 "figure.nw"
 }
 
-#line 2247 "figure.nw"
+#line 2484 "figure.nw"
 figure::figure(const char* file_name, string fig_name) : inherited(), k(realsymbol("k")), l(realsymbol("l")),
 	n(realsymbol("n")), m(realsymbol("m"))
 {
-//	flags &= ~status_flags::expanded;
 	infinity=symbol("infty","\\infty");
 	real_line=symbol("R","\\mathbf{R}");
 	
-#line 2271 "figure.nw"
+#line 2507 "figure.nw"
 	string fn=file_name;
 	size_t found = fn.find(".gar");
 	if (found == std::string::npos)
@@ -1047,7 +1164,7 @@ figure::figure(const char* file_name, string fig_name) : inherited(), k(realsymb
 
 	cout << "use filename: " << fn << endl;
 
-#line 2254 "figure.nw"
+#line 2490 "figure.nw"
 	GiNaC::archive A;
 	std::ifstream ifs(fn.c_str(),  std::ifstream::in);
 	ifs >> A;
@@ -1063,11 +1180,11 @@ figure::figure(const char* file_name, string fig_name) : inherited(), k(realsymb
 	}
 }
 
-#line 2281 "figure.nw"
+#line 2517 "figure.nw"
 void figure::save(const char* file_name, const char * fig_name)
 {
 	
-#line 2271 "figure.nw"
+#line 2507 "figure.nw"
 	string fn=file_name;
 	size_t found = fn.find(".gar");
 	if (found == std::string::npos)
@@ -1075,7 +1192,7 @@ void figure::save(const char* file_name, const char * fig_name)
 
 	cout << "use filename: " << fn << endl;
 
-#line 2284 "figure.nw"
+#line 2520 "figure.nw"
 	GiNaC::archive A;
 	A.archive_ex(*this, fig_name);
 	ofstream out(fn.c_str());
@@ -1091,11 +1208,11 @@ void figure::save(const char* file_name, const char * fig_name)
 	}
 }
 
-#line 2301 "figure.nw"
+#line 2537 "figure.nw"
 void figure::set_metric(const ex & Mp, const ex & Mc)
 {
 	
-#line 2120 "figure.nw"
+#line 2359 "figure.nw"
 if (is_a<clifford>(Mp)) {
 	point_metric = clifford_unit(varidx(real_line, 2), ex_to<clifford>(Mp).get_metric());
  } else if (is_a<matrix>(Mp) || is_a<tensor>(Mp)) {
@@ -1103,21 +1220,21 @@ if (is_a<clifford>(Mp)) {
  } else if (is_a<indexed>(Mp)) {
 	point_metric = clifford_unit(varidx(real_line, 2), Mp);
 
-#line 2132 "figure.nw"
+#line 2371 "figure.nw"
 	} else if (is_a<realsymbol>(Mp) || is_a<numeric>(Mp)) {
 		point_metric=clifford_unit(varidx(real_line, 2), indexed(diag_matrix(lst(-1,Mp)), varidx(symbol("i"), 2), varidx(symbol("j"), 2)));
 	}
 
-#line 2304 "figure.nw"
+#line 2540 "figure.nw"
 	
-#line 2172 "figure.nw"
+#line 2411 "figure.nw"
 	if (Mc.is_zero()) {
 		cycle_metric = clifford_unit(varidx(real_line, 2), indexed(diag_matrix(
 												lst(ex_to<clifford>(point_metric).get_metric(idx(0,2),idx(0,2)),
 													-jump_fnct(-ex_to<clifford>(point_metric).get_metric(idx(1,2),idx(1,2))))),
 													varidx(symbol("ic"), 2), varidx(symbol("jc"), 2)));
 
-#line 2181 "figure.nw"
+#line 2420 "figure.nw"
 	} else if (is_a<clifford>(Mc)) {
 		cycle_metric = clifford_unit(varidx(real_line, 2), ex_to<clifford>(Mc).get_metric());
 	} else if (is_a<matrix>(Mc) || is_a<tensor>(Mc)) {
@@ -1130,31 +1247,31 @@ if (is_a<clifford>(Mp)) {
 										varidx(symbol("ic"), 2), varidx(symbol("jc"), 2)));
 	}
 
-#line 2305 "figure.nw"
+#line 2541 "figure.nw"
 	update_figure();
 }
 
-#line 2310 "figure.nw"
+#line 2546 "figure.nw"
 return_type_t figure::return_type_tinfo() const
 {
 	return make_return_type_t<figure>();
 }
 
-#line 2317 "figure.nw"
+#line 2553 "figure.nw"
 int figure::compare_same_type(const basic &other) const
 {
        GINAC_ASSERT(is_a<figure>(other));
 	   return inherited::compare_same_type(other);
 }
 
-#line 2326 "figure.nw"
+#line 2562 "figure.nw"
 ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 {
 	//cerr << "symbolic: "; symbolic.dbgprint();
 	//cerr << "condit: "; cond.dbgprint();
 	bool first_solution=true, second_solution=false;
 
-#line 2334 "figure.nw"
+#line 2570 "figure.nw"
 	lst symbols, lin_cond, nonlin_cond;
 	if (is_a<symbol>(ex_to<cycle2D_data>(symbolic).get_m()))
 		symbols.append(ex_to<cycle2D_data>(symbolic).get_m());
@@ -1168,11 +1285,13 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 								 "parameters"));
 	//cerr << "symbols: "; symbols.dbgprint();
 
-#line 2350 "figure.nw"
+#line 2586 "figure.nw"
 	lst rhs;
 	for (size_t r=0; r<cond.nops(); r++) {
 		lst sys;
-		const ex eq = (cond.op(r).op(0)-cond.op(r).op(1)).expand(); // lhs-rhs==0
+		ex eq = (cond.op(r).op(0)-cond.op(r).op(1)).expand(); // lhs-rhs==0
+		if (float_evaluation)
+			eq=eq.evalf();
 		//cerr << "eq: "; eq.dbgprint();
 		ex linpart = eq;
 		for (size_t c=0; c<symbols.nops(); c++) {
@@ -1184,14 +1303,14 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 		//cerr << "sys: "; sys.dbgprint();
 		//cerr << "linpart: "; linpart.dbgprint();
 
-#line 2367 "figure.nw"
+#line 2605 "figure.nw"
 		bool is_linear=true;
 		for (size_t i=0; i<symbols.nops(); i++)
 			if (sys.has(symbols.op(i)) || linpart.has(symbols.op(i)))
 				is_linear = false;
 		//cerr << "this equation linear? " << is_linear << endl;
 
-#line 2376 "figure.nw"
+#line 2614 "figure.nw"
 		if (is_linear) {
 			lin_cond.append(sys);
 			rhs.append(linpart);
@@ -1202,7 +1321,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 	//cerr << "nonlin_cond: "; nonlin_cond.dbgprint();
 
 
-#line 2388 "figure.nw"
+#line 2626 "figure.nw"
 	lst subs_lst1, free_vars;
  	if (lin_cond.nops()>0) {
 		matrix solution;
@@ -1210,14 +1329,14 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 			solution=ex_to<matrix>(lst_to_matrix(lin_cond)).solve(matrix(symbols.nops(),1,symbols),
 																  matrix(rhs.nops(),1,rhs));
 
-#line 2398 "figure.nw"
+#line 2636 "figure.nw"
         } catch (const std::runtime_error & e) {
 			return lst();
         }
         GINAC_ASSERT(solution.cols()==1);
         GINAC_ASSERT(solution.rows()==symbols.nops());
 
-#line 2407 "figure.nw"
+#line 2645 "figure.nw"
         for (size_t i=0; i<symbols.nops(); i++)
 			if (symbols.op(i)==solution(i,0))
 				free_vars.append(symbols.op(i));
@@ -1225,14 +1344,14 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 				subs_lst1.append(symbols.op(i)==solution(i,0));
 	}
 
-#line 2417 "figure.nw"
+#line 2655 "figure.nw"
 	cycle2D_data C_new, C1_new;
 	if (nonlin_cond.nops() == 0) {
 		C_new = ex_to<cycle2D_data>(symbolic.subs(subs_lst1)).normalize();
 		//cerr << "C_new: "; C_new.dbgprint();
 	}
 
-#line 2425 "figure.nw"
+#line 2663 "figure.nw"
 		else {
 			lst subs_lst2, // The second solution lists for quadratic equations
 				nonlin_cond_new;
@@ -1240,28 +1359,30 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 			//cerr << "free_vars: "; free_vars.dbgprint();
 			//cerr << "subs_lst1: "; subs_lst1.dbgprint();
 
-#line 2435 "figure.nw"
+#line 2673 "figure.nw"
 			ex quadratic_eq=nonlin_cond.op(0).subs(subs_lst1, subs_options::algebraic
 												   | subs_options::no_pattern);
 			ex quadratic=(quadratic_eq.op(0)-quadratic_eq.op(1)).expand().normal();
+			if (float_evaluation)
+				quadratic=quadratic.evalf();
 			//cerr << "quadratic: "; quadratic.dbgprint();
 			bool is_quadratic=false;
 			exmap flat_var_em, var1_em, var2_em;
 			ex flat_var, var1, var2;
 
-#line 2445 "figure.nw"
+#line 2685 "figure.nw"
 			for (size_t i=0; i < free_vars.nops(); ++i) {
 				ex A=quadratic.coeff(free_vars.op(i),2).normal();
 				//cerr << "A: "; A.dbgprint();
-				//				if (! is_almost_zero(A.evalf())) {
-				if (! A.is_zero()) {
+				//				if (! is_less_than_epsilon(A.evalf())) {
+				if (! (A.is_zero() || (float_evaluation && is_less_than_epsilon(A)))) {
 					is_quadratic=true;
 					ex B=quadratic.coeff(free_vars.op(i),1),
 						C=quadratic.coeff(free_vars.op(i),0);
 					ex D=(pow(B,2)-numeric(4)*A*C).normal();
 					//cerr << "D: "; D.dbgprint();
 
-#line 2459 "figure.nw"
+#line 2699 "figure.nw"
 					if (free_vars.nops()>1) {
 						if (i==0) {
 							flat_var_em.insert(std::make_pair(free_vars.op(1), numeric(1)));
@@ -1275,9 +1396,9 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 					//cerr << "D: "; D.dbgprint();
 
 
-#line 2476 "figure.nw"
-					if (is_almost_zero1(D.evalf()) || ((! is_almost_zero1(B.evalf())) && is_almost_zero1((A/B).evalf()))) {
-						if (is_almost_zero1(D.evalf())) {
+#line 2716 "figure.nw"
+					if (is_less_than_epsilon(D.evalf()) || ((! is_less_than_epsilon(B.evalf())) && is_less_than_epsilon((A/B).evalf()))) {
+						if (is_less_than_epsilon(D.evalf())) {
 							//cerr << "zero determinant" << endl;
 							var1=(-B/numeric(2)/A).subs(flat_var_em,subs_options::algebraic
 											   | subs_options::no_pattern).normal();
@@ -1295,7 +1416,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 							subs_lst1.append(flat_var);
 						//cerr << "subs_lst1a: "; subs_lst1.dbgprint();
 
-#line 2497 "figure.nw"
+#line 2737 "figure.nw"
 					} else {
 						second_solution=true;
 						var1=((-B+sqrt(D))/2/A).subs(flat_var_em,subs_options::algebraic
@@ -1309,7 +1430,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 						subs_lst1=ex_to<lst>(subs_lst1.append(free_vars.op(i) == var1)
 											 .subs(flat_var_em,subs_options::algebraic | subs_options::no_pattern));
 
-#line 2513 "figure.nw"
+#line 2753 "figure.nw"
 						if (free_vars.nops()>1)
 							subs_lst1.append(flat_var);
 						//cerr << "subs_lst1b: "; subs_lst1.dbgprint();
@@ -1325,14 +1446,14 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 				}
 			}
 
-#line 2531 "figure.nw"
+#line 2771 "figure.nw"
 			if (! is_quadratic) {
 				//cerr << "The equation is not quadratic in a single variable"<<endl;
 				//cerr << "free_vars: "; free_vars.dbgprint();
 				if (free_vars.nops()>1) {
 					//cerr << "Quadratic substituted "; (quadratic.subs(free_vars.op(0)==numeric(1))==0).dbgprint();
 
-#line 2540 "figure.nw"
+#line 2780 "figure.nw"
 					int count=0;
 					if (quadratic.has(free_vars.op(1))) {
 						var1=lsolve(quadratic.subs(free_vars.op(0)==numeric(1))==0, free_vars.op(1));
@@ -1346,7 +1467,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 						++count;
 					}
 
-#line 2555 "figure.nw"
+#line 2795 "figure.nw"
 					if (quadratic.has(free_vars.op(0))) {
 						var2=lsolve(quadratic.subs(free_vars.op(1)==numeric(1))==0, free_vars.op(0));
 						var2_em.insert(std::make_pair(free_vars.op(0), var2));
@@ -1356,7 +1477,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 						subs_lst2.append(free_vars.op(0) == var2).append(free_vars.op(1)==numeric(1));
 						//cerr << "non-quadratic subs_lst2: "; subs_lst2.dbgprint();
 
-#line 2567 "figure.nw"
+#line 2807 "figure.nw"
 						if (count==0)
 							subs_lst1=subs_lst2;
 						++count;
@@ -1364,16 +1485,17 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 					if (count>1)
 						second_solution=true;
 
-#line 2577 "figure.nw"
+#line 2817 "figure.nw"
 				} else {
 					//cerr << "Quadratic becomes linear: "; quadratic.dbgprint();
 					//cerr << "Var: "; free_vars.op(0).dbgprint();
 					ex B=quadratic.coeff(free_vars.op(0),1).normal(),
 						C=quadratic.coeff(free_vars.op(0),0).normal();
-					if (! (quadratic-(B*free_vars.op(0)+C)).normal().is_zero())
+					if (! ( (quadratic-(B*free_vars.op(0)+C)).normal().is_zero()
+							|| (float_evaluation && is_less_than_epsilon(quadratic-(B*free_vars.op(0)+C)))))
 						return lst();
 
-#line 2587 "figure.nw"
+#line 2828 "figure.nw"
 					var1=(-C/B).normal();
 					var1_em.insert(std::make_pair(free_vars.op(0), var1));
 					subs_lst1=ex_to<lst>(subs_lst1
@@ -1383,7 +1505,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 				}
 			}
 
-#line 2599 "figure.nw"
+#line 2840 "figure.nw"
 			lst::const_iterator it1= nonlin_cond.begin();
 			++it1;
 			//cerr << "Subs list: "; subs_lst1.dbgprint();
@@ -1392,17 +1514,17 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 			if(second_solution)
 				subs_f2=ex_to<lst>(subs_lst2.evalf());
 			for (; it1 != nonlin_cond.end(); ++it1) {
-				first_solution &=is_almost_zero1((it1->op(0)-it1->op(1)).subs(subs_f1,
+				first_solution &=is_less_than_epsilon((it1->op(0)-it1->op(1)).subs(subs_f1,
 																	 subs_options::algebraic
 																			 | subs_options::no_pattern).evalf());
 				if(second_solution)
-					second_solution &= is_almost_zero1((it1->op(0)-it1->op(1)).subs(subs_f2,
+					second_solution &= is_less_than_epsilon((it1->op(0)-it1->op(1)).subs(subs_f2,
 																		  subs_options::algebraic
 																		  | subs_options::no_pattern).evalf());
 
 			}
 
-#line 2619 "figure.nw"
+#line 2860 "figure.nw"
 			if (first_solution)
 				C_new=symbolic.subs(subs_lst1, subs_options::algebraic
 													| subs_options::no_pattern);
@@ -1414,7 +1536,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 			//cerr << "C1_new: "; C1_new.dbgprint();
 		}
 
-#line 2632 "figure.nw"
+#line 2873 "figure.nw"
 		lst repl;
  		if (ex_to<cycle2D_data>(C_new).has(ex_to<cycle2D_data>(symbolic).get_k()))
 			repl.append(ex_to<cycle2D_data>(symbolic).get_k()==realsymbol());
@@ -1426,7 +1548,7 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 			repl.append(ex_to<cycle2D_data>(symbolic).get_l().op(0).op(1)==realsymbol());
 
 
-#line 2645 "figure.nw"
+#line 2886 "figure.nw"
 	if (repl.nops()>0) {
 		if (first_solution)
 			C_new=C_new.subs(repl);
@@ -1436,27 +1558,27 @@ ex figure::evaluate_cycle(const ex & symbolic, const lst & cond) const
 
 	//cerr << endl;
 
-#line 2656 "figure.nw"
+#line 2897 "figure.nw"
 	lst res;
-
 	if (first_solution)
-		res.append(C_new.num_normalize());
+		res.append(float_evaluation?C_new.num_normalize().evalf():C_new.num_normalize());
 	if (second_solution)
-		res.append(C1_new.num_normalize());
+		res.append(float_evaluation?C1_new.num_normalize().evalf():C1_new.num_normalize());
 
 	return res;
 }
 
-#line 2668 "figure.nw"
+#line 2908 "figure.nw"
 ex figure::update_cycle2D_node(const ex & key, const lst & eq_cond, const lst & neq_cond, lst res, unsigned int level)
 {
 	//cerr << "level: " << level << " "; nodes[key].dbgprint();
 	if (level == 0) {// set the iniail symbolic cycle for calculations
 		
-#line 2735 "figure.nw"
+#line 2975 "figure.nw"
 	if ( (nodes[key].get_parents().nops() == 1) && (is_a<subfigure>(nodes[key].get_parents().op(0)))) {
 		figure F=ex_to<figure>(ex_to<basic>(ex_to<subfigure>(nodes[key].get_parents().op(0)).get_subf())
 							   .clearflag(status_flags::expanded));
+		F=float_evaluation? F.set_float_eval(): F.set_exact_eval();
 		lst parkeys=ex_to<lst>(ex_to<subfigure>(nodes[key].get_parents().op(0)).get_parlist());
 		unsigned int var=0;
 		char name[12];
@@ -1468,15 +1590,15 @@ ex figure::update_cycle2D_node(const ex & key, const lst & eq_cond, const lst & 
 		F.set_metric(point_metric,cycle_metric); // this calls automatic figure re-calculation
 		return F.get_cycle2D(F.get_cycle2D_label("result"));
 
-#line 2752 "figure.nw"
+#line 2993 "figure.nw"
 	} else
 		nodes[key].set_cycles(cycle2D_data(k, indexed(matrix(1, 2, lst(l,n)), varidx(key, 2)), m, false));
 
 
-#line 2673 "figure.nw"
+#line 2913 "figure.nw"
 	}
 
-#line 2677 "figure.nw"
+#line 2917 "figure.nw"
 	lst par = nodes[key].get_parents();
 	lst::const_iterator it = par.begin();
 	for(unsigned int i=0; i<level;++i)
@@ -1486,7 +1608,7 @@ ex figure::update_cycle2D_node(const ex & key, const lst & eq_cond, const lst & 
 																	 point_metric, cycle_metric, nodes));
 	//cerr << "new_cond: "; new_cond.dbgprint();
 
-#line 2688 "figure.nw"
+#line 2928 "figure.nw"
 	for (lst::const_iterator it1 = new_cond.begin(); it1 != new_cond.end(); ++it1) {
 		lst store_cond=neq_cond;
 		lst use_cond=eq_cond;
@@ -1501,7 +1623,7 @@ ex figure::update_cycle2D_node(const ex & key, const lst & eq_cond, const lst & 
 		if(level == par.nops()-1) { //if the last one in the parents list
 			lst cnew=ex_to<lst>(evaluate_cycle(nodes[key].get_cycle2D_data(0), use_cond));
 
-#line 2705 "figure.nw"
+#line 2945 "figure.nw"
 			//cerr<< "Store cond: "; store_cond.dbgprint();
 			//cerr<< "Use cond: "; use_cond.dbgprint();
 			for (size_t inew=0; inew< cnew.nops(); ++inew) {
@@ -1529,11 +1651,11 @@ ex figure::update_cycle2D_node(const ex & key, const lst & eq_cond, const lst & 
 		return res;
 }
 
-#line 2758 "figure.nw"
-void figure::update_figure()
+#line 2999 "figure.nw"
+figure figure::update_figure()
 {
 	if (info(status_flags::expanded))
-		return;
+		return *this;
 	lst all_child;
 	for (exhashmap<cycle2D_node>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 		if (ex_to<cycle2D_node>(it->second).get_generation() == 0) {
@@ -1547,39 +1669,39 @@ void figure::update_figure()
 	all_child.sort();
 	all_child.unique();
 	update_node_lst(all_child);
+	return *this;
 }
 
-#line 2779 "figure.nw"
+#line 3021 "figure.nw"
 ex figure::get_cycle2D(const ex & key, bool use_point_metric) const
 {
 	exhashmap<cycle2D_node> snodes=get_nodes();
 	return snodes[key].get_cycle2D(use_point_metric?point_metric:cycle_metric);
 }
 
-
-#line 2788 "figure.nw"
+#line 3029 "figure.nw"
 void figure::reset_figure()
 {
 	nodes.clear();
 	
-#line 2098 "figure.nw"
+#line 2338 "figure.nw"
 	nodes[infinity] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(0))),
 																   varidx(infinity, 2)),numeric(1)),INFINITY_GEN);
  
-#line 2792 "figure.nw"
+#line 3033 "figure.nw"
 	
-#line 2103 "figure.nw"
+#line 2343 "figure.nw"
 	nodes[real_line] = cycle2D_node(cycle2D_data(numeric(0),indexed(matrix(1, 2, lst(numeric(0),numeric(1))),
 																	varidx(real_line, 2)),numeric(0)),REAL_LINE_GEN);
 
-#line 2793 "figure.nw"
+#line 3034 "figure.nw"
 }
 
-#line 2797 "figure.nw"
-ex figure::add_point(const ex & x, const ex & y,  string  name, string  TeXname)
+#line 3038 "figure.nw"
+ex figure::add_point(const ex & x, const ex & y,  string name, string TeXname)
 {
 	
-#line 2982 "figure.nw"
+#line 3228 "figure.nw"
 	string TeXname_new;
 	std::regex e ("([[:alpha:]]+)([[:digit:]]+)");
 	std::regex e1 ("([[:alnum:]]+)_([[:alnum:]]+)");
@@ -1591,18 +1713,18 @@ ex figure::add_point(const ex & x, const ex & y,  string  name, string  TeXname)
 	} else
 		TeXname_new=TeXname;
 
-#line 2800 "figure.nw"
+#line 3041 "figure.nw"
 	symbol key(name, TeXname_new);
 	return add_point(x, y, key);
 }
 
-#line 2806 "figure.nw"
+#line 3047 "figure.nw"
 ex figure::add_point(const ex & x, const ex & y, const ex & key)
 {
 	if (not is_a<symbol>(key))
 		throw(std::invalid_argument("figure::add_point(const ex &, const ex &, const ex &): the third"
 									" argument need to be a point"));
-#line 2818 "figure.nw"
+#line 3059 "figure.nw"
 	symbol mother(ex_to<symbol>(key).get_name()+"m"),
 		father(ex_to<symbol>(key).get_name()+"f");
 
@@ -1613,13 +1735,13 @@ ex figure::add_point(const ex & x, const ex & y, const ex & key)
 															   varidx(father, 2)),numeric(2)*y),
 							   GHOST_GEN, lst(), lst(key));
 
-#line 2833 "figure.nw"
+#line 3074 "figure.nw"
 	nodes[key]=cycle2D_node(cycle2D_data(), 0,
 							lst(cycle_relation(mother,cycle_orthogonal),cycle_relation(father,cycle_orthogonal),
 								cycle_relation(key,cycle_orthogonal,false),cycle_relation(infinity,cycle_different)));
 
 
-#line 2839 "figure.nw"
+#line 3080 "figure.nw"
 	if (! info(status_flags::expanded))
 		nodes[key].set_cycles(ex_to<lst>(update_cycle2D_node(key)));
 	if (FIGURE_DEBUG)
@@ -1628,20 +1750,24 @@ ex figure::add_point(const ex & x, const ex & y, const ex & key)
 	return key;
 }
 
-#line 2849 "figure.nw"
+#line 3090 "figure.nw"
 ex figure::add_cycle2D(const ex & C, const ex & key)
 {
-	nodes[key]=cycle2D_node(C);
+	ex lC=ex_to<cycle2D>(C).get_l();
+	if (is_a<indexed>(lC))
+		nodes[key]=cycle2D_node(C.subs(lC.op(1)==key));
+	else
+		nodes[key]=cycle2D_node(C);
 	if (FIGURE_DEBUG)
 		cerr << "Add the cycle: " << nodes[key] << endl;
 	return key;
 }
 
-#line 2859 "figure.nw"
-ex figure::add_cycle2D(const ex & C, string  name, string  TeXname)
+#line 3104 "figure.nw"
+ex figure::add_cycle2D(const ex & C, string name, string TeXname)
 {
 	
-#line 2982 "figure.nw"
+#line 3228 "figure.nw"
 	string TeXname_new;
 	std::regex e ("([[:alpha:]]+)([[:digit:]]+)");
 	std::regex e1 ("([[:alnum:]]+)_([[:alnum:]]+)");
@@ -1653,12 +1779,12 @@ ex figure::add_cycle2D(const ex & C, string  name, string  TeXname)
 	} else
 		TeXname_new=TeXname;
 
-#line 2862 "figure.nw"
+#line 3107 "figure.nw"
 	symbol key(name, TeXname_new);
 	return add_cycle2D(C, key);
  }
 
-#line 2868 "figure.nw"
+#line 3113 "figure.nw"
 void figure::set_cycle2D(const ex & key, const ex & C)
 {
     if (nodes.find(key) == nodes.end())
@@ -1675,7 +1801,7 @@ of a cycle with parents"));
         cerr << "Replace the cycle: " << nodes[key] << endl;
 }
 
-#line 2886 "figure.nw"
+#line 3131 "figure.nw"
 void figure::move_cycle2D(const ex & key, const ex & C)
 {
 	if (nodes.find(key) == nodes.end())
@@ -1684,7 +1810,7 @@ void figure::move_cycle2D(const ex & key, const ex & C)
 	if (nodes[key].get_generation() != 0)
 		throw(std::invalid_argument("figure::set_cycle2D(): cannot modify data of a cycle in"
 									" non-zero generation"));
-#line 2900 "figure.nw"
+#line 3145 "figure.nw"
 	if (nodes[key].get_parents().nops() > 0) {
 		lst par=nodes[key].get_parent_keys();
 		for(lst::const_iterator it = par.begin(); it != par.end(); ++it)
@@ -1695,7 +1821,7 @@ void figure::move_cycle2D(const ex & key, const ex & C)
 	}
 	nodes[key].parents=lst();
 
-#line 2912 "figure.nw"
+#line 3157 "figure.nw"
 	nodes[key].set_cycles(C);
 	update_node_lst(nodes[key].get_children());
 
@@ -1703,7 +1829,7 @@ void figure::move_cycle2D(const ex & key, const ex & C)
 		cerr << "Replace the cycle: " << nodes[key] << endl;
 }
 
-#line 2921 "figure.nw"
+#line 3166 "figure.nw"
 ex figure::add_cycle_rel(const lst & rel, const ex & key)
 {
 	lst cond;
@@ -1716,7 +1842,7 @@ ex figure::add_cycle_rel(const lst & rel, const ex & key)
 	}
 	nodes[key]=cycle2D_node(cycle2D_data(),gen+1,rel);
 
-#line 2935 "figure.nw"
+#line 3180 "figure.nw"
 	if (! info(status_flags::expanded))
 		nodes[key].set_cycles(ex_to<lst>(update_cycle2D_node(key)));
 
@@ -1726,11 +1852,11 @@ ex figure::add_cycle_rel(const lst & rel, const ex & key)
 	return key;
 }
 
-#line 2947 "figure.nw"
+#line 3192 "figure.nw"
 ex figure::add_cycle_rel(const lst & rel, string name, string TeXname)
 {
 	
-#line 2982 "figure.nw"
+#line 3228 "figure.nw"
 	string TeXname_new;
 	std::regex e ("([[:alpha:]]+)([[:digit:]]+)");
 	std::regex e1 ("([[:alnum:]]+)_([[:alnum:]]+)");
@@ -1742,13 +1868,14 @@ ex figure::add_cycle_rel(const lst & rel, string name, string TeXname)
 	} else
 		TeXname_new=TeXname;
 
-#line 2950 "figure.nw"
+#line 3195 "figure.nw"
 	return add_cycle_rel(rel, symbol(name, TeXname_new));
 }
 
-#line 2955 "figure.nw"
+#line 3200 "figure.nw"
 ex figure::add_subfigure(const ex & F, const lst & L, const ex & key)
 {
+	GINAC_ASSERT(is_a<figure>(F));
 	int gen=0;
 
 	for(lst::const_iterator it = L.begin(); it != L.end(); ++it) {
@@ -1763,11 +1890,11 @@ ex figure::add_subfigure(const ex & F, const lst & L, const ex & key)
 	return key;
 }
 
-#line 2974 "figure.nw"
+#line 3220 "figure.nw"
 ex figure::add_subfigure(const ex & F, const lst & l, string name, string TeXname)
 {
 	
-#line 2982 "figure.nw"
+#line 3228 "figure.nw"
 	string TeXname_new;
 	std::regex e ("([[:alpha:]]+)([[:digit:]]+)");
 	std::regex e1 ("([[:alnum:]]+)_([[:alnum:]]+)");
@@ -1779,11 +1906,11 @@ ex figure::add_subfigure(const ex & F, const lst & l, string name, string TeXnam
 	} else
 		TeXname_new=TeXname;
 
-#line 2977 "figure.nw"
+#line 3223 "figure.nw"
 		return add_subfigure(F, l, symbol(name, TeXname_new));
 }
 
-#line 2995 "figure.nw"
+#line 3241 "figure.nw"
 void figure::move_point(const ex & key, const ex & x, const ex & y)
 {
 	if (nodes.find(key) == nodes.end())
@@ -1796,7 +1923,7 @@ void figure::move_point(const ex & key, const ex & x, const ex & y)
 	if (FIGURE_DEBUG)
 		cerr << "A cycle is moved : " << nodes[key] << endl;
 
-#line 3010 "figure.nw"
+#line 3256 "figure.nw"
 	lst par=nodes[key].get_parent_keys();
 	if (par.nops() == 4 ) {
 		for(lst::const_iterator it = par.begin(); it != par.end(); ++it) {
@@ -1808,11 +1935,11 @@ void figure::move_point(const ex & key, const ex & x, const ex & y)
 																	  varidx(*it, 2)),numeric(2)*y));
 		}
 
-#line 3024 "figure.nw"
+#line 3270 "figure.nw"
 	} else if  (par.nops() == 0) {
 		lst chil=nodes[key].get_children();
 		
-#line 2818 "figure.nw"
+#line 3059 "figure.nw"
 	symbol mother(ex_to<symbol>(key).get_name()+"m"),
 		father(ex_to<symbol>(key).get_name()+"f");
 
@@ -1823,12 +1950,12 @@ void figure::move_point(const ex & key, const ex & x, const ex & y)
 															   varidx(father, 2)),numeric(2)*y),
 							   GHOST_GEN, lst(), lst(key));
 
-#line 2833 "figure.nw"
+#line 3074 "figure.nw"
 	nodes[key]=cycle2D_node(cycle2D_data(), 0,
 							lst(cycle_relation(mother,cycle_orthogonal),cycle_relation(father,cycle_orthogonal),
 								cycle_relation(key,cycle_orthogonal,false),cycle_relation(infinity,cycle_different)));
 
-#line 3027 "figure.nw"
+#line 3273 "figure.nw"
 		nodes[key].children=chil;
 	} else
 		throw(std::invalid_argument("figure::move_point(): strange number (neither 0 nor 4) of parents,"
@@ -1840,13 +1967,13 @@ void figure::move_point(const ex & key, const ex & x, const ex & y)
 	nodes[key].set_cycles(ex_to<lst>(update_cycle2D_node(key)));
 	update_node_lst(nodes[key].get_children());
 
-#line 3041 "figure.nw"
+#line 3287 "figure.nw"
 	 update_node_lst(nodes[key].get_children());
 	 if (FIGURE_DEBUG)
 		cerr << "Moved to: (" << x << ", " << y << ")" << endl;
 }
 
-#line 3048 "figure.nw"
+#line 3294 "figure.nw"
 void figure::update_node_lst(const ex & inlist)
 {
 	if (info(status_flags::expanded))
@@ -1863,7 +1990,7 @@ void figure::update_node_lst(const ex & inlist)
 				current.append(*it);
 			else
 				future.append(*it);
-#line 3066 "figure.nw"
+#line 3312 "figure.nw"
 		for (lst::const_iterator it = current.begin(); it != current.end(); ++it) {
 			nodes[*it].set_cycles(ex_to<lst>(update_cycle2D_node(*it)));
 			//			lst nchild=nodes[*it].get_children_except(*it);
@@ -1871,13 +1998,13 @@ void figure::update_node_lst(const ex & inlist)
 			for (lst::const_iterator it1 = nchild.begin(); it1 != nchild.end(); ++it1)
 				future.append(*it1);
 		}
-#line 3075 "figure.nw"
+#line 3321 "figure.nw"
 		intake=future;
                 intake.sort();
 		intake.unique();
 	}
 }
-#line 3082 "figure.nw"
+#line 3328 "figure.nw"
 ex figure::get_cycle2D_label(string name) const
 {
 	for (exhashmap<cycle2D_node>::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
@@ -1887,32 +2014,32 @@ ex figure::get_cycle2D_label(string name) const
 	return 0;
 }
 
-#line 3094 "figure.nw"
+#line 3340 "figure.nw"
 void figure::remove_cycle2D_node(const ex & key)
 {
 	lst  branches=nodes[key].get_children();
 	for (lst::const_iterator it = branches.begin(); it != branches.end(); ++it)
 		remove_cycle2D_node(*it);
 
-#line 3102 "figure.nw"
+#line 3348 "figure.nw"
 	lst  par = nodes[key].get_parent_keys();
 	for (lst::const_iterator it = par.begin(); it != par.end(); ++it) {
 
-#line 3109 "figure.nw"
+#line 3355 "figure.nw"
 		if (nodes[*it].get_generation() == GHOST_GEN)
 			nodes.erase(*it);
 		else
 			nodes[*it].remove_child(key);
 	}
 
-#line 3117 "figure.nw"
+#line 3363 "figure.nw"
 	//remove the cycle2D_node c from the figure
 	nodes.erase(key);
 	if (FIGURE_DEBUG)
 		cerr << "A cycle is removed :" << key << endl ;
 }
 
-#line 3125 "figure.nw"
+#line 3371 "figure.nw"
 void figure::asy_draw(ostream & ost, ostream & err, const string picture,
 					  const ex & xmin, const ex & xmax, const ex & ymin, const ex & ymax,
 					  asy_style style, label_string lstring, bool with_realline,
@@ -1930,7 +2057,7 @@ void figure::asy_draw(ostream & ost, ostream & err, const string picture,
 					 ((it->second.get_generation() == REAL_LINE_GEN) && with_realline)) {
 					ost << "// label: " << (it->first) << endl;
 
-#line 3144 "figure.nw"
+#line 3390 "figure.nw"
 				lst colours;
 				string asy_opt;
 				if (it->second.custom_asy=="") {
@@ -1938,13 +2065,13 @@ void figure::asy_draw(ostream & ost, ostream & err, const string picture,
 				} else
 					asy_opt=it->second.custom_asy;
 
-#line 3153 "figure.nw"
+#line 3399 "figure.nw"
 				stringstream sstr;
 				ex_to<cycle2D>(*it1).asy_draw(sstr, picture, xmin, xmax,
 											 ymin, ymax, colours, asy_opt, with_header, points_per_arc);
 
-#line 3160 "figure.nw"
-			if (FIGURE_DEBUG && is_almost_zero1(ex_to<cycle2D>(*it1).det())
+#line 3406 "figure.nw"
+			if (FIGURE_DEBUG && is_less_than_epsilon(ex_to<cycle2D>(*it1).det())
 				&& ex_to<clifford>(point_metric).get_metric(idx(1,2),idx(1,2)).is_zero()) {
 				double x=ex_to<numeric>(ex_to<cycle2D>(*it1).center(cycle_metric).op(0)
 										.evalf()).to_double(),
@@ -1956,14 +2083,14 @@ void figure::asy_draw(ostream & ost, ostream & err, const string picture,
 						 << "), black+3pt);" << endl;
 			}
 
-#line 3174 "figure.nw"
+#line 3420 "figure.nw"
 				if (std::regex_search(sstr.str(), re))
 					dots+=sstr.str();
 				else
 					ost << sstr.str();
 
 
-#line 3182 "figure.nw"
+#line 3428 "figure.nw"
 				labels << lstring(it->first, (*it1), sstr.str());
 				}
 			} catch (exception &p) {
@@ -1975,7 +2102,7 @@ void figure::asy_draw(ostream & ost, ostream & err, const string picture,
 		<< labels.str();
 }
 
-#line 3195 "figure.nw"
+#line 3441 "figure.nw"
 void figure::do_print(const print_dflt & con, unsigned level) const {
 	for (exhashmap<cycle2D_node>::const_iterator it = nodes.begin(); it != nodes.end(); ++it) {
 		if (it->second.get_generation() > GHOST_GEN  || FIGURE_DEBUG)
@@ -1983,7 +2110,7 @@ void figure::do_print(const print_dflt & con, unsigned level) const {
 	}
 }
 
-#line 3204 "figure.nw"
+#line 3450 "figure.nw"
 ex figure::op(size_t i) const
 {
  GINAC_ASSERT(i<nops());
@@ -1997,17 +2124,42 @@ ex figure::op(size_t i) const
 	case 3:
 		return cycle_metric;
 	default:
-		throw(std::invalid_argument("figure::op(): requested operand out of the range (3)"));
+		exhashmap<cycle2D_node>::const_iterator it=nodes.begin();
+		for (size_t n=4; n<i;++n)
+			++it;
+		return it->second;
 	}
 }
 
-#line 3223 "figure.nw"
+#line 3472 "figure.nw"
+/*ex & figure::let_op(size_t i)
+{
+	ensure_if_modifiable();
+	GINAC_ASSERT(i<nops());
+	switch(i) {
+	case 0:
+		return real_line;
+	case 1:
+		return infinity;
+	case 2:
+		return point_metric;
+	case 3:
+		return cycle_metric;
+	default:
+		exhashmap<cycle2D_node>::iterator it=nodes.begin();
+		for (size_t n=4; n<i;++n)
+			++it;
+		return nodes[it->first];
+	}
+}*/
+
+#line 3495 "figure.nw"
 figure figure::subs(const ex & e, unsigned options) const
 {
 	exmap m;
 	if (e.info(info_flags::list)) {
-		lst l = ex_to<lst>(e);
-		for (lst::const_iterator i = l.begin(); i != l.end(); ++i)
+		lst sl = ex_to<lst>(e);
+		for (lst::const_iterator i = sl.begin(); i != sl.end(); ++i)
 			m.insert(std::make_pair(i->op(0), i->op(1)));
 	} else if (is_a<relational>(e)) {
 		m.insert(std::make_pair(e.op(0), e.op(1)));
@@ -2021,7 +2173,17 @@ figure figure::subs(const ex & e, unsigned options) const
 	return figure(point_metric.subs(m, options), cycle_metric.subs(m, options), snodes);
 }
 
-#line 3244 "figure.nw"
+#line 3516 "figure.nw"
+ex figure::evalf(int level) const
+{
+	exhashmap<cycle2D_node> snodes;
+	for (exhashmap<cycle2D_node>::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
+		snodes[it->first]=ex_to<cycle2D_node>(it->second.evalf(level));
+
+	return figure(point_metric.evalf(level), cycle_metric.evalf(level), snodes);
+}
+
+#line 3527 "figure.nw"
 void figure::archive(archive_node &an) const
 {
 	inherited::archive(an);
@@ -2029,8 +2191,9 @@ void figure::archive(archive_node &an) const
 	an.add_ex("infinity", infinity);
 	an.add_ex("point_metric", ex_to<clifford>(point_metric));
 	an.add_ex("cycle_metric", ex_to<clifford>(cycle_metric));
+	an.add_bool("float_evaluation", float_evaluation);
 
-#line 3254 "figure.nw"
+#line 3538 "figure.nw"
 	lst keys, cnodes;
 	for (exhashmap<cycle2D_node>::const_iterator it = nodes.begin(); it != nodes.end(); ++it) {
 		keys.append(it->first);
@@ -2040,7 +2203,7 @@ void figure::archive(archive_node &an) const
 	an.add_ex("cnodes", cnodes);
 }
 
-#line 3265 "figure.nw"
+#line 3549 "figure.nw"
 void figure::read_archive(const archive_node &an, lst &sym_lst)
 {
 	inherited::read_archive(an, sym_lst);
@@ -2055,8 +2218,9 @@ void figure::read_archive(const archive_node &an, lst &sym_lst)
 	all_sym.append(real_line);
 	an.find_ex("infinity", infinity, sym_lst);
 	all_sym.append(infinity);
+	an.find_bool("float_evaluation", float_evaluation);
 
-#line 3282 "figure.nw"
+#line 3567 "figure.nw"
 	//an.find_ex("keys", keys, all_sym);
 	an.find_ex("keys", keys, sym_lst);
 	for (lst::const_iterator it = ex_to<lst>(keys).begin(); it != ex_to<lst>(keys).end(); ++it)
@@ -2072,10 +2236,10 @@ void figure::read_archive(const archive_node &an, lst &sym_lst)
 	}
 }
 
-#line 3299 "figure.nw"
+#line 3584 "figure.nw"
 GINAC_BIND_UNARCHIVER(figure);
 
-#line 3303 "figure.nw"
+#line 3588 "figure.nw"
 bool figure::info(unsigned inf) const
 {
 	switch (inf) {
@@ -2085,23 +2249,21 @@ bool figure::info(unsigned inf) const
 	return inherited::info(inf);
 }
 
-
-#line 3315 "figure.nw"
+#line 3600 "figure.nw"
 string asy_cycle_color(const ex & label, const ex & C, lst & color)
 {
 	string asy_options="";
-	if (is_almost_zero1(ex_to<cycle2D>(C).det())) {// point
+	if (is_less_than_epsilon(ex_to<cycle2D>(C).det())) {// point
 		color=lst(0.5,0,0);
 		asy_options="dotted";
-	} else if (is_almost_zero1(ex_to<cycle2D>(C).get_k())) // straight line
+	} else if (is_less_than_epsilon(ex_to<cycle2D>(C).get_k())) // straight line
 		color=lst(0,0.5,0);
 	else  // a proper circle-hyperbola-parabola
 		color=lst(0,0,0.5);
 
 	return asy_options;
 }
-
-#line 3331 "figure.nw"
+#line 3617 "figure.nw"
 string label_pos(const ex & label, const ex & C, const string draw_str) {
 	stringstream sstr;
 	sstr << latex << label;
@@ -2111,7 +2273,7 @@ string label_pos(const ex & label, const ex & C, const string draw_str) {
 	if (sstr.str() == name) {
 		string TeXname;
 		
-#line 2982 "figure.nw"
+#line 3228 "figure.nw"
 	string TeXname_new;
 	std::regex e ("([[:alpha:]]+)([[:digit:]]+)");
 	std::regex e1 ("([[:alnum:]]+)_([[:alnum:]]+)");
@@ -2123,35 +2285,40 @@ string label_pos(const ex & label, const ex & C, const string draw_str) {
 	} else
 		TeXname_new=TeXname;
 
-#line 3340 "figure.nw"
+#line 3626 "figure.nw"
 		if (TeXname_new =="")
 			new_TeXname=name;
 		else
 			new_TeXname=TeXname_new;
 	} else
 		new_TeXname=sstr.str();
-
-	std::regex e("([.\\n\\r\\s]*)(dot|draw)\\(([\\w]*,)?((?:\\(.+?\\)|\\{.+?\\}|[^-,0-9\\.])+),([.\\n\\r]*)");
+#line 3636 "figure.nw"
+	std::regex draw("([.\\n\\r\\s]*)(draw)\\(([\\w]*,)?((?:\\(.+?\\)|\\{.+?\\}|[^-,0-9\\.])+),([.\\n\\r]*)");
+	std::regex dot("([.\\n\\r\\s]*)(dot)\\(([\\w]*,)?((?:\\(.+?\\)|\\{.+?\\}|[^-,0-9\\.])+),([.\\n\\r]*)");
 	std::regex e1("symbolLaTeXname");
 
-	if (std::regex_search(draw_str, e)) {
-			string labelstr=std::regex_replace (draw_str, e,
+	if (std::regex_search(draw_str, draw)) {
+			string labelstr=std::regex_replace (draw_str, draw,
 								"label($3\"$symbolLaTeXname$\",point($4,0.1),SE);\n",
 								std::regex_constants::format_no_copy | std::regex_constants::format_first_only);
+			return std::regex_replace (labelstr, e1, new_TeXname);
+	} else if (std::regex_search(draw_str, dot)) {
+			string labelstr=std::regex_replace (draw_str, dot,
+								"label($3\"$symbolLaTeXname$\",point($4,0.1),SE);\n",
+								std::regex_constants::format_no_copy);
 			return std::regex_replace (labelstr, e1, new_TeXname);
 	} else
 		return "";
 }
 
-#line 3361 "figure.nw"
+#line 3656 "figure.nw"
 void figure::asy_write(int size, const ex & xmin, const ex & xmax, const ex & ymin, const ex & ymax,
 					  string name, string format,
 					  asy_style style, label_string lstring, bool with_realline,
-					  bool with_header, int points_per_arc) const
+					  bool with_header, int points_per_arc, bool rm_asy_file) const
 {
-	char buffer [L_tmpnam];
-	tmpnam (buffer);
-	ofstream out(buffer);
+	string filename=name+".asy";
+	ofstream out(filename);
 	out << "size(" << size << ");" << endl;
 	asy_draw(out, cerr, "", xmin, xmax, ymin, ymax,
 			 style, lstring, with_realline, with_header, points_per_arc);
@@ -2161,17 +2328,69 @@ void figure::asy_write(int size, const ex & xmin, const ex & xmax, const ex & ym
 		out << "shipout(\"" << name << "\");" << endl;
 	out.flush();
 	out.close();
-	char command[L_tmpnam+120];
+#line 3676 "figure.nw"
+	char command[256];
 	strcpy(command, "asy -V -f ");
 	strcat(command, format.c_str());
 	strcat(command, " ");
-	strcat(command, buffer);
+	strcat(command, name.c_str());
 	char * pcommand=command;
 	system(pcommand);
-	remove(buffer);
+	if (rm_asy_file)
+		remove(filename.c_str());
 }
 
-#line 3390 "figure.nw"
+#line 3689 "figure.nw"
+void figure::asy_animate(const ex & par, const ex &val,
+						 int size, const ex & xmin, const ex & xmax, const ex & ymin, const ex & ymax,
+						 string name, string format,
+						 asy_style style, label_string lstring, bool with_realline,
+						 bool with_header, int points_per_arc, bool rm_asy_file) const
+{
+	string filename=name+".asy";
+	ofstream out(filename);
+#line 3701 "figure.nw"
+	if (format == "pdf")
+		out << "usepackage(\"animate\");" << endl
+			<< "settings.tex=\"pdflatex\";" << endl;
+	out << "import animation;" << endl
+		<< "size(" << size << ");" << endl
+		<< "animation a;" << endl;
+#line 3709 "figure.nw"
+	for (lst::const_iterator it = ex_to<lst>(val).begin(); it != ex_to<lst>(val).end(); ++it) {
+		out << "save();" << endl;
+		subs(par==*it).unfreeze().update_figure().asy_draw(out, cerr, "", xmin, xmax, ymin, ymax,
+			 style, lstring, with_realline, with_header, points_per_arc);
+		out << "a.add();" << endl
+			<< "restore();" << endl;
+	}
+
+#line 3720 "figure.nw"
+	if (format == "pdf")
+		out << "label(a.pdf(delay=250,\"controls\",multipage=false));" << endl;
+	else if ((format == "gif") ||  (format == "mp4") || (format == "mng"))
+		out << "a.movie(loops=10,delay=250);" << endl;
+	else
+		out << format << endl;
+	out.flush();
+	out.close();
+
+#line 3731 "figure.nw"
+	char command[256];
+	strcpy(command, "asy -V ");
+	if ((format == "pdf") || (format == "gif") || (format == "mp4") || (format == "mng")) {
+		strcat(command, " -f ");
+		strcat(command, format.c_str());
+		strcat(command, " ");
+	}
+	strcat(command, name.c_str());
+	char * pcommand=command;
+	system(pcommand);
+	if (rm_asy_file)
+		remove(filename.c_str());
+}
+
+#line 3747 "figure.nw"
 ex figure::check_rel(const ex & key1, const ex & key2, PCR rel, bool use_cycle_metric) const
 {
 	exhashmap<cycle2D_node> snodes=nodes;
@@ -2185,8 +2404,7 @@ ex figure::check_rel(const ex & key1, const ex & key2, PCR rel, bool use_cycle_m
 		for (lst::const_iterator it2 = cycles2.begin(); it2 != cycles2.end(); ++it2) {
 			lst calc=ex_to<lst>(rel(ex_to<cycle2D>(*it1),ex_to<cycle2D>(*it2)));
 			for (lst::const_iterator itr = calc.begin(); itr != calc.end(); ++itr) {
-
-#line 3407 "figure.nw"
+#line 3765 "figure.nw"
 				ex e=(itr->op(0)).normal();
 				if (is_a<relational>(e))
 					res.append(e);
@@ -2197,7 +2415,22 @@ ex figure::check_rel(const ex & key1, const ex & key2, PCR rel, bool use_cycle_m
 
 	return res;
 }
-#line 3447 "figure.nw"
+
+#line 3778 "figure.nw"
+ex figure::apply(PEVAL func, bool use_cycle_metric) const
+{
+	lst res;
+	for (exhashmap<cycle2D_node>::const_iterator it = nodes.begin(); it != nodes.end(); ++it) {
+		int i=0;
+		lst cycles=ex_to<lst>(it->second.get_cycle2D(use_cycle_metric? cycle_metric : point_metric));
+		for (lst::const_iterator itc = cycles.begin(); itc != cycles.end(); ++itc) {
+			res.append(lst(func(*itc), it->first, i));
+			++i;
+		}
+	}
+	return res;
+}
+#line 3821 "figure.nw"
 bool is_almost_equal(const ex & A, const ex & B)
 {
 	if ((not is_a<cycle2D>(A)) || (not is_a<cycle2D>(B)))
@@ -2208,7 +2441,7 @@ bool is_almost_equal(const ex & A, const ex & B)
 	ex factor=0, ofactor=0;
 
 	// Check that coefficients are scalar multiples of C2
-	if (not is_almost_zero1((C1.get_m()*C2.get_k()-C2.get_m()*C1.get_k()).normal()))
+	if (not is_less_than_epsilon((C1.get_m()*C2.get_k()-C2.get_m()*C1.get_k()).normal()))
 		return false;
 	// Set up coefficients for proportionality
 	if (C1.get_k().normal().is_zero()) {
@@ -2219,19 +2452,19 @@ bool is_almost_equal(const ex & A, const ex & B)
 		ofactor=C2.get_k();
 	}
 
-#line 3470 "figure.nw"
+#line 3844 "figure.nw"
 	for (int i=0; i<2; i++)
 		// search the the first non-zero coefficient
 		if (factor.is_zero()) {
 			factor=C1.get_l(i);
 			ofactor=C2.get_l(i);
 		} else
-			if (! is_almost_zero1((C1.get_l(i)*ofactor-C2.get_l(i)*factor).normal()))
+			if (! is_less_than_epsilon((C1.get_l(i)*ofactor-C2.get_l(i)*factor).normal()))
 				return false;
 	return true;
 }
 
-#line 3488 "figure.nw"
+#line 3862 "figure.nw"
 ex check_tangent(const ex & C1, const ex & C2)
 {
 	return lst( (ex)lst(pow(ex_to<cycle2D>(C1).cycle_product(ex_to<cycle2D>(C2)),2)
@@ -2239,7 +2472,7 @@ ex check_tangent(const ex & C1, const ex & C2)
 					 *ex_to<cycle2D>(C2).cycle_product(ex_to<cycle2D>(C2)) == 0));
 }
 
-#line 3502 "figure.nw"
+#line 3876 "figure.nw"
 ex cycle_tangent(const ex & C1, const ex & C2)
 {
 	return lst( (ex)lst(ex_to<cycle2D>(C1).cycle_product(ex_to<cycle2D>(C1))+numeric(1)==0,
@@ -2250,7 +2483,7 @@ ex cycle_tangent(const ex & C1, const ex & C2)
 				   +sqrt(-ex_to<cycle2D>(C2).cycle_product(ex_to<cycle2D>(C2)))==0));
 }
 
-#line 3514 "figure.nw"
+#line 3888 "figure.nw"
 ex cycle_tangent_o(const ex & C1, const ex & C2)
 {
 	return lst((ex)lst(ex_to<cycle2D>(C1).cycle_product(ex_to<cycle2D>(C1))+numeric(1)==0,
@@ -2258,7 +2491,7 @@ ex cycle_tangent_o(const ex & C1, const ex & C2)
 					   -sqrt(-ex_to<cycle2D>(C2).cycle_product(ex_to<cycle2D>(C2)))==0));
 }
 
-#line 3523 "figure.nw"
+#line 3897 "figure.nw"
 ex cycle_tangent_i(const ex & C1, const ex & C2)
 {
 	return lst((ex)lst(ex_to<cycle2D>(C1).cycle_product(ex_to<cycle2D>(C1))+numeric(1)==0,
@@ -2266,13 +2499,13 @@ ex cycle_tangent_i(const ex & C1, const ex & C2)
 					   +sqrt(-ex_to<cycle2D>(C2).cycle_product(ex_to<cycle2D>(C2)))==0));
 }
 
-#line 3532 "figure.nw"
+#line 3906 "figure.nw"
 ex cycle_different(const ex & C1, const ex & C2)
 {
 	return lst( (ex)lst(ex_to<cycle2D>(C1).is_equal(ex_to<basic>(C2), true)? 0: 1));
 }
 
-#line 3539 "figure.nw"
+#line 3913 "figure.nw"
 ex midpoint_constructor()
 {
  	figure SF=ex_to<figure>((new figure)->setflag(status_flags::expanded));
@@ -2281,25 +2514,25 @@ ex midpoint_constructor()
 	ex v2=SF.add_cycle2D(cycle2D_data(),"variable001");
 	ex v3=SF.add_cycle2D(cycle2D_data(),"variable002");
 
-#line 3549 "figure.nw"
+#line 3923 "figure.nw"
 	ex v4=SF.add_cycle_rel(lst(cycle_relation(v1,cycle_orthogonal),
 							   cycle_relation(v2,cycle_orthogonal),
 							   cycle_relation(v3,cycle_orthogonal)),
 						   "v4");
 
-#line 3556 "figure.nw"
+#line 3930 "figure.nw"
 	ex v5=SF.add_cycle_rel(lst(cycle_relation(v1,cycle_orthogonal),
 							   cycle_relation(v2,cycle_orthogonal),
 							   cycle_relation(v4,cycle_orthogonal)),
 						   "v5");
 
-#line 3563 "figure.nw"
+#line 3937 "figure.nw"
 	ex v6=SF.add_cycle_rel(lst(cycle_relation(v3,cycle_orthogonal),
 							   cycle_relation(v4,cycle_orthogonal),
 							   cycle_relation(v5,cycle_orthogonal)),
 						   "v6");
 
-#line 3570 "figure.nw"
+#line 3944 "figure.nw"
 	ex r=symbol("result");
 	SF.add_cycle_rel(lst(cycle_relation(v4,cycle_orthogonal),
 						   cycle_relation(v6,cycle_orthogonal),
@@ -2311,7 +2544,7 @@ ex midpoint_constructor()
 }
 
 
-#line 3584 "figure.nw"
+#line 3958 "figure.nw"
 ex unique_cycle(const ex & L)
 {
 	if(is_a<lst>(L) && (L.nops() > 1) ) {

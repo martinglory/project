@@ -1,4 +1,4 @@
-#line 4495 "cycle.nw"
+#line 4601 "cycle.nw"
 // The library to operate cycles in non-Euclidean geometry
 //
 //  Copyright (C) 2004-2014 Vladimir V. Kisil
@@ -16,7 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#line 2787 "cycle.nw"
+#line 2795 "cycle.nw"
 #include <cycle.h>
 #define PRINT_CYCLE  c.s << "("; \
  k.print(c, level); \
@@ -57,13 +57,13 @@ cycle::cycle() : unit(), k(), l(), m()
 #endif
 }
 
-#line 2833 "cycle.nw"
+#line 2841 "cycle.nw"
 cycle::cycle(const ex & k1, const ex & l1, const ex & m1, const ex & metr) // Main constructor
  : k(k1), m(m1)
 {
 	ex D, metric;
 
-#line 2841 "cycle.nw"
+#line 2849 "cycle.nw"
 	  if (is_a<indexed>(l1.simplify_indexed())) {
 		  l = ex_to<indexed>(l1.simplify_indexed());
 		  if (ex_to<indexed>(l).get_indices().size() == 1) {
@@ -78,13 +78,13 @@ cycle::cycle(const ex & k1, const ex & l1, const ex & m1, const ex & metr) // Ma
 		  D = l1.nops();
 		  l = indexed(matrix(1, l1.nops(), ex_to<lst>(l1)), varidx((new symbol)->setflag(status_flags::dynallocated), D));
 
-#line 2858 "cycle.nw"
+#line 2866 "cycle.nw"
 	} else if (not l1.simplify_indexed().is_zero()) {
 		  throw(std::invalid_argument("cycle::cycle(): the second parameter should be an indexed object, "
 									  "matrix or list"));
 	  }
 
-#line 2866 "cycle.nw"
+#line 2874 "cycle.nw"
 	if (is_a<clifford>(metr)) {
 		if (D.is_zero())
 			D = ex_to<varidx>(metr.op(1)).get_dim();
@@ -102,7 +102,7 @@ cycle::cycle(const ex & k1, const ex & l1, const ex & m1, const ex & metr) // Ma
 			}
 		}
 
-#line 2885 "cycle.nw"
+#line 2893 "cycle.nw"
 	if (D.is_zero())
 		throw(std::invalid_argument("cycle::cycle(): the metric should be either tensor, "
 									"matrix, Clifford unit or indexed by two indices. "
@@ -110,7 +110,7 @@ cycle::cycle(const ex & k1, const ex & l1, const ex & m1, const ex & metr) // Ma
 
 unit = clifford_unit(varidx(0, D), metr);
 	}
-#line 2895 "cycle.nw"
+#line 2903 "cycle.nw"
 /*	if (l1.is_zero()) {
 		if (not D.is_zero()) {
 			l = indexed(0, varidx((new symbol)->setflag(status_flags::dynallocated), D));
@@ -122,7 +122,7 @@ unit = clifford_unit(varidx(0, D), metr);
 #if GINAC_VERSION_ATLEAST(1,5)
 #else
  
-#line 2911 "cycle.nw"
+#line 2919 "cycle.nw"
 if (is_a<numeric>(D))
 	switch (ex_to<numeric>(D).to_int()) {
 	case 2:
@@ -136,11 +136,11 @@ else
 	tinfo_key = &cycle::tinfo_static;
 
 
-#line 2906 "cycle.nw"
+#line 2914 "cycle.nw"
 #endif
 }
 
-#line 2931 "cycle.nw"
+#line 2939 "cycle.nw"
 cycle::cycle(const lst & l, const ex & metr, const ex & r_squared, const ex & e, const ex & sign)
 {
 	symbol m_temp;
@@ -148,13 +148,13 @@ cycle::cycle(const lst & l, const ex & metr, const ex & r_squared, const ex & e,
 	(*this) = C.subject_to(lst(C.radius_sq(e, sign) == r_squared), lst(m_temp));
 }
 
-#line 2941 "cycle.nw"
+#line 2949 "cycle.nw"
 cycle::cycle(const cycle & C, const ex & metr)
 {
  (*this) = metr.is_zero()? C : cycle(C.get_k(), C.get_l(), C.get_m(), metr);
 }
 
-#line 2949 "cycle.nw"
+#line 2957 "cycle.nw"
 cycle::cycle(const matrix & M, const ex & metr, const ex & e, const ex & sign)
 {
 	if (not (M.rows() == 2 && M.cols() == 2 && (M.op(0)+M.op(3)).normal().is_zero()))
@@ -162,7 +162,7 @@ cycle::cycle(const matrix & M, const ex & metr, const ex & e, const ex & sign)
 									"with M(1,1)=-M(2,2)"));
 
 	
-#line 3020 "cycle.nw"
+#line 3028 "cycle.nw"
 ex e1, D;
 if (e.is_zero()) {
 	ex metr1;
@@ -185,11 +185,11 @@ if (e.is_zero()) {
 	D = ex_to<varidx>(e.op(1)).get_dim();
  }
 
-#line 2956 "cycle.nw"
+#line 2964 "cycle.nw"
 	varidx i0((new symbol)->setflag(status_flags::dynallocated), D),
 	i1((new symbol)->setflag(status_flags::dynallocated), D, true);
 
-#line 2962 "cycle.nw"
+#line 2970 "cycle.nw"
 if (sign.is_zero()) {
 	try {
 		(*this) = cycle(remove_dirac_ONE(M.op(2)), clifford_to_lst(M.op(0), e1), remove_dirac_ONE(M.op(1)), metr);
@@ -201,7 +201,7 @@ if (sign.is_zero()) {
 	ex sign_m, conv;
 	sign_m = sign.evalm();
 
-#line 2975 "cycle.nw"
+#line 2983 "cycle.nw"
 	if (is_a<tensor>(sign_m))
 		conv = indexed(ex_to<tensor>(sign_m), i0, i1);
 	else if (is_a<clifford>(sign_m)) {
@@ -218,7 +218,7 @@ if (sign.is_zero()) {
 			throw(std::invalid_argument("cycle::cycle(): the sign should be an indexed object with two "
 										"indices and their dimensionality matching to the second parameter"));
 
-#line 2993 "cycle.nw"
+#line 3001 "cycle.nw"
 	} else if (is_a<matrix>(sign_m)) {
 		if ((ex_to<matrix>(sign_m).cols() == D) && (ex_to<matrix>(sign_m).rows() == D))
 			conv = indexed(ex_to<matrix>(sign_m), i0, i1);
@@ -229,7 +229,7 @@ if (sign.is_zero()) {
 		throw(std::invalid_argument("cycle::cycle(): the sign should be either tensor, indexed, matrix "
 									"or Clifford unit"));
 
-#line 3006 "cycle.nw"
+#line 3014 "cycle.nw"
 	try {
 		(*this) = cycle(remove_dirac_ONE(M.op(2)), indexed(matrix(1, ex_to<numeric>(D).to_int(),
 																   clifford_to_lst(M.op(0), e1)), i0.toggle_variance())*conv, remove_dirac_ONE(M.op(1)), metr);
@@ -241,7 +241,7 @@ if (sign.is_zero()) {
 }
 }
 
-#line 3048 "cycle.nw"
+#line 3056 "cycle.nw"
 ex cycle::op(size_t i) const
 {
  GINAC_ASSERT(i<nops());
@@ -260,7 +260,7 @@ ex cycle::op(size_t i) const
  }
 }
 
-#line 3068 "cycle.nw"
+#line 3076 "cycle.nw"
 ex & cycle::let_op(size_t i)
 {
  GINAC_ASSERT(i<nops());
@@ -280,7 +280,7 @@ ex & cycle::let_op(size_t i)
  }
 }
 
-#line 3089 "cycle.nw"
+#line 3097 "cycle.nw"
 cycle cycle::subs(const ex & e, unsigned options) const
 {
  exmap m;
@@ -297,7 +297,7 @@ cycle cycle::subs(const ex & e, unsigned options) const
 }
 
 
-#line 3113 "cycle.nw"
+#line 3121 "cycle.nw"
 void cycle::archive(archive_node &n) const
 {
 	inherited::archive(n);
@@ -307,7 +307,7 @@ void cycle::archive(archive_node &n) const
 	n.add_ex("unit", unit);
 }
 
-#line 3124 "cycle.nw"
+#line 3132 "cycle.nw"
 void cycle::read_archive(const archive_node &n, lst &sym_lst) 
 {
 	inherited::read_archive(n, sym_lst);
@@ -321,7 +321,7 @@ GINAC_BIND_UNARCHIVER(cycle);
 
 //const char *cycle::get_class_name() { return "cycle"; }
 
-#line 3139 "cycle.nw"
+#line 3147 "cycle.nw"
 int cycle::compare_same_type(const basic &other) const
 {
        GINAC_ASSERT(is_a<cycle>(other));
@@ -337,7 +337,7 @@ int cycle::compare_same_type(const basic &other) const
 		return 1;*/
 }
 
-#line 3156 "cycle.nw"
+#line 3164 "cycle.nw"
 bool cycle::is_equal(const basic & other, bool projectively) const
 {
 	if (not is_a<cycle>(other))
@@ -365,7 +365,7 @@ bool cycle::is_equal(const basic & other, bool projectively) const
 			return false;
 
 
-#line 3185 "cycle.nw"
+#line 3193 "cycle.nw"
 	if (is_a<numeric>(get_dim())) {
 		int D = ex_to<numeric>(get_dim()).to_int();
 		if (! (is_a<numeric>(o.get_dim()) && D ==ex_to<numeric>(o.get_dim()).to_int()))
@@ -389,7 +389,7 @@ bool cycle::is_equal(const basic & other, bool projectively) const
 		return (l*ofactor-o.get_l()*factor).normal().is_zero();
 }
 
-#line 3212 "cycle.nw"
+#line 3220 "cycle.nw"
 ex cycle::the_same_as(const basic & other) const
 {
  if (! (is_a<cycle>(other) && (get_dim() == ex_to<cycle>(other).get_dim())))
@@ -397,19 +397,19 @@ ex cycle::the_same_as(const basic & other) const
  ex f=1, f1=1;
  lst res;
 
-#line 3221 "cycle.nw"
+#line 3229 "cycle.nw"
  if (not k.is_zero()) {
   f = k;
   f1 = ex_to<cycle>(other).get_k();
   res.append(f1*m ==f*ex_to<cycle>(other).get_m());
 
-#line 3228 "cycle.nw"
+#line 3236 "cycle.nw"
  } else if (not m.is_zero()) {
   f = m;
   f1 = ex_to<cycle>(other).get_m();
  }
 
-#line 3235 "cycle.nw"
+#line 3243 "cycle.nw"
  if (ex_to<varidx>(unit.op(1)).is_numeric()) {
   int D = ex_to<numeric>(get_dim()).to_int();
   for (int i=0; i < D; ++i)
@@ -420,13 +420,24 @@ ex cycle::the_same_as(const basic & other) const
 }
 
 
-#line 3247 "cycle.nw"
+#line 3255 "cycle.nw"
 bool cycle::is_zero() const
 {
  return (k.is_zero() && l.is_zero() && m.is_zero());
 }
 
-#line 3254 "cycle.nw"
+#line 3262 "cycle.nw"
+ex cycle::real_part() const
+{
+	return cycle(k.real_part(),l.real_part(),m.real_part(),unit);
+}
+
+ex cycle::imag_part() const
+{
+	return cycle(k.imag_part(),l.imag_part(),m.imag_part(),unit);
+}
+
+#line 3274 "cycle.nw"
 void cycle::do_print(const print_dflt & c, unsigned level) const
 {
  PRINT_CYCLE
@@ -442,7 +453,7 @@ void cycle::do_print_latex(const print_latex & c, unsigned level) const
  PRINT_CYCLE
 }
 
-#line 3274 "cycle.nw"
+#line 3294 "cycle.nw"
 cycle cycle::add(const cycle & rh) const
 {
 	if (get_dim() != rh.get_dim())
@@ -472,7 +483,7 @@ cycle cycle::div(const ex & rh) const
 	return exmul(pow(rh, numeric(-1)));
 }
 
-#line 3305 "cycle.nw"
+#line 3325 "cycle.nw"
 const cycle operator+(const cycle & lh, const cycle & rh)
 {
  return lh.add(rh);
@@ -498,7 +509,7 @@ const ex operator*(const cycle & lh, const cycle & rh)
  return lh.mul(rh);
 }
 
-#line 3332 "cycle.nw"
+#line 3352 "cycle.nw"
 const cycle2D operator+(const cycle2D & lh, const cycle2D & rh)
 {
  return ex_to<cycle2D>(lh.add(rh));
@@ -524,7 +535,7 @@ const ex operator*(const cycle2D & lh, const cycle2D & rh)
  return ex_to<cycle2D>(lh.mul(rh));
 }
 
-#line 3365 "cycle.nw"
+#line 3385 "cycle.nw"
 cycle cycle::normalize(const ex & k_new, const ex & e) const
 {
 	ex ratio = 0;
@@ -550,7 +561,7 @@ cycle cycle::normalize(const ex & k_new, const ex & e) const
 	return cycle(k/ratio, indexed((l.op(0)/ratio).evalm().normal(), l.op(1)), (m/ratio).normal(), get_metric());
 }
 
-#line 3392 "cycle.nw"
+#line 3412 "cycle.nw"
 cycle cycle::normalize_det(const ex & e, const ex & sign) const
 {
 	ex d = det(e, sign);
@@ -558,7 +569,7 @@ cycle cycle::normalize_det(const ex & e, const ex & sign) const
 }
 
 
-#line 3402 "cycle.nw"
+#line 3422 "cycle.nw"
 ex cycle::center(const ex & metr, bool return_matrix) const
 {
 	if (is_a<numeric>(get_dim())) {
@@ -577,7 +588,7 @@ ex cycle::center(const ex & metr, bool return_matrix) const
 				}
 		}
 		
-#line 3426 "cycle.nw"
+#line 3446 "cycle.nw"
 		lst c;
 		for(int i=0; i<D; i++)
 			if (k.is_zero())
@@ -591,7 +602,7 @@ ex cycle::center(const ex & metr, bool return_matrix) const
 	}
 }
 
-#line 3449 "cycle.nw"
+#line 3469 "cycle.nw"
 cycle cycle::subject_to(const ex & condition, const ex & vars) const
 {
  lst vars1;
@@ -620,7 +631,7 @@ cycle cycle::subject_to(const ex & condition, const ex & vars) const
 }
 
 
-#line 3486 "cycle.nw"
+#line 3506 "cycle.nw"
 matrix cycle::to_matrix(const ex & e, const ex & sign) const
 {
 	ex one, es, conv, D = get_dim();
@@ -639,7 +650,7 @@ matrix cycle::to_matrix(const ex & e, const ex & sign) const
 		throw(std::invalid_argument("cycle::to_matrix(): expect a clifford number, matrix, tensor or "
 									"indexed as the first parameter"));
 
-#line 3506 "cycle.nw"
+#line 3526 "cycle.nw"
 	ex sign_m = sign.evalm();
 
 if (is_a<tensor>(sign_m))
@@ -667,13 +678,13 @@ else if (is_a<clifford>(sign_m)) {
 	throw(std::invalid_argument("cycle::to_matrix(): the sign should be either tensor, indexed, "
 								"matrix or Clifford unit"));
 
-#line 3535 "cycle.nw"
+#line 3555 "cycle.nw"
 	ex a00 = expand_dummy_sum(l.subs(ex_to<indexed>(l).get_indices()[0] == i0.toggle_variance()) * conv * es);
 
 return matrix(2, 2, lst(a00, m * one, k * one, -a00));
 }
 
-#line 3547 "cycle.nw"
+#line 3567 "cycle.nw"
 ex cycle::val(const ex & y) const
 {
 	ex y0, D = get_dim();
@@ -703,14 +714,14 @@ ex cycle::val(const ex & y) const
 							- 2* l*y0.subs(i0 == ex_to<varidx>(ex_to<indexed>(l).get_indices()[0]).toggle_variance()) +m);
 }
 
-#line 3589 "cycle.nw"
+#line 3609 "cycle.nw"
 ex cycle::det(const ex & e, const ex & sign, const ex & k_norm) const
 {
 	return remove_dirac_ONE((k_norm.is_zero()?*this:normalize(k_norm)).to_matrix(e, sign).determinant());
 }
 
 
-#line 3598 "cycle.nw"
+#line 3618 "cycle.nw"
 ex cycle::mul(const ex & C, const ex & e, const ex & sign, const ex & sign1) const
 {
 	if (is_a<cycle>(C)) {
@@ -723,7 +734,7 @@ ex cycle::mul(const ex & C, const ex & e, const ex & sign, const ex & sign1) con
 									"or 2x2 matrix"));
 }
 
-#line 3621 "cycle.nw"
+#line 3641 "cycle.nw"
 cycle cycle::matrix_similarity(const ex & M, const ex & e, const ex & sign, bool not_inverse, const ex & sign_inv) const
 {
 	if (not (is_a<matrix>(M) && ex_to<matrix>(M).rows()==2 && ex_to<matrix>(M).cols()==2))
@@ -731,7 +742,7 @@ cycle cycle::matrix_similarity(const ex & M, const ex & e, const ex & sign, bool
 	return matrix_similarity(M.op(0), M.op(1), M.op(2), M.op(3), e, sign, not_inverse, sign_inv);
 }
 
-#line 3631 "cycle.nw"
+#line 3651 "cycle.nw"
 cycle cycle::matrix_similarity(const ex & a, const ex & b, const ex & c, const ex & d, const ex & e,
           const ex & sign, bool not_inverse, const ex & sign_inv) const
 {
@@ -739,33 +750,33 @@ cycle cycle::matrix_similarity(const ex & a, const ex & b, const ex & c, const e
 												 .mul(ex_to<matrix>(mul(matrix(2,2,not_inverse?lst(clifford_star(d), -clifford_star(b), -clifford_star(c), clifford_star(a)):lst(a, b, c, d)), e, sign)))
 												 .evalm()).normal());
 
-#line 3642 "cycle.nw"
+#line 3662 "cycle.nw"
  return cycle(matrix(2,2,lst((R.op(0)-R.op(3))/2,R.op(1),R.op(2),(-R.op(0)+R.op(3))/2)), get_metric(), e, sign_inv);
 }
 
-#line 3648 "cycle.nw"
+#line 3668 "cycle.nw"
 cycle cycle::sl2_similarity(const ex & a, const ex & b, const ex & c, const ex & d, const ex & e, 
 							const ex & sign, bool not_inverse, const ex & sign_inv) const
 {
 //	ex sign_inv=is_a<matrix>(sign)?pow(sign,-1):sign;
 	relational sl2_rel = (c*b == (d*a-1));
 
-#line 3657 "cycle.nw"
+#line 3677 "cycle.nw"
 	ex det=(a*d-b*c).eval();
 	if (is_a<numeric>(det) && (ex_to<numeric>(det).evalf() !=1)) 
 		sl2_rel = (c*b==c*b);
 
-#line 3663 "cycle.nw"
+#line 3683 "cycle.nw"
 	matrix R=ex_to<matrix>(canonicalize_clifford(
 							   sl2_clifford(a, b, c, d, e.is_zero()?unit:e, not_inverse)
 							   .mul(ex_to<matrix>(mul(sl2_clifford(a, b, c, d, e.is_zero()?unit:e, !not_inverse), e, sign_inv)))
 							   .evalm().subs(sl2_rel, subs_options::algebraic | subs_options::no_pattern)).normal());
 
-#line 3670 "cycle.nw"
+#line 3690 "cycle.nw"
 	return cycle(matrix(2,2,lst((R.op(0)-R.op(3))/2,R.op(1),R.op(2),(-R.op(0)+R.op(3))/2)), get_metric(), e, sign);
 }
 
-#line 3675 "cycle.nw"
+#line 3695 "cycle.nw"
 cycle cycle::sl2_similarity(const ex & M, const ex & e, const ex & sign, bool not_inverse, const ex & sign_inv) const
 {
 	if (is_a<matrix>(M) || M.info(info_flags::list))
@@ -774,21 +785,21 @@ cycle cycle::sl2_similarity(const ex & M, const ex & e, const ex & sign, bool no
 		throw(std::invalid_argument("sl2_clifford(): expect a list or matrix as the first parameter"));
 }
 
-#line 3688 "cycle.nw"
+#line 3708 "cycle.nw"
 cycle cycle::cycle_similarity(const cycle & C, const ex & e, const ex & sign, const ex & sign1, const ex & sign_inv) const
 {
 //	ex sign_inv=is_a<matrix>(sign)?pow(sign,-1):sign;
  return cycle(ex_to<matrix>(canonicalize_clifford(C.mul(mul(C, e, sign, sign1.is_zero()?sign:sign1), e.is_zero()?get_metric():e, sign1.is_zero()?sign:sign1))), get_metric(), e, sign_inv);
 }
 
-#line 3696 "cycle.nw"
+#line 3716 "cycle.nw"
 ex cycle::is_f_orthogonal(const cycle & C, const ex & e, const ex & sign, const ex & sign1, const ex & sign_inv) const
 {
 	return (cycle(ex_to<matrix>(canonicalize_clifford(this->mul(C.mul(*this, e, sign, sign1.is_zero()?sign:sign1), e, sign1.is_zero()?sign:sign1))), get_metric(), e, sign_inv).get_l(get_dim()-1).normal() == 0);
 //	return (C.cycle_similarity(*this, e, sign, sign1).get_l(get_dim()-1).normal() == 0);
 }
 
-#line 3709 "cycle.nw"
+#line 3729 "cycle.nw"
 cycle2D::cycle2D() : inherited()
 {
 #if GINAC_VERSION_ATLEAST(1,5)
@@ -797,7 +808,7 @@ cycle2D::cycle2D() : inherited()
 #endif
 }
 
-#line 3719 "cycle.nw"
+#line 3739 "cycle.nw"
 cycle2D::cycle2D(const ex & k1, const ex & l1, const ex & m1, const ex & metr)
  : inherited(k1, l1, m1, metr)
 {
@@ -809,7 +820,7 @@ cycle2D::cycle2D(const ex & k1, const ex & l1, const ex & m1, const ex & metr)
 #endif
 }
 
-#line 3732 "cycle.nw"
+#line 3752 "cycle.nw"
 cycle2D::cycle2D(const lst & l, const ex & r_squared, const ex & metr, const ex & e, const ex & sign)
  : inherited(l, r_squared, metr, e, sign)
 {
@@ -821,7 +832,7 @@ cycle2D::cycle2D(const lst & l, const ex & r_squared, const ex & metr, const ex 
 #endif
 }
 
-#line 3745 "cycle.nw"
+#line 3765 "cycle.nw"
 cycle2D::cycle2D(const matrix & M, const ex & metr, const ex & e, const ex & sign)
  : inherited(M, metr, e, sign)
 {
@@ -833,13 +844,13 @@ cycle2D::cycle2D(const matrix & M, const ex & metr, const ex & e, const ex & sig
 #endif
 }
 
-#line 3758 "cycle.nw"
+#line 3778 "cycle.nw"
 cycle2D::cycle2D(const cycle & C, const ex & metr)
 {
  (*this) = cycle2D(C.get_k(), C.get_l(), C.get_m(), (metr.is_zero()? C.get_metric(): metr));
 }
 
-#line 3765 "cycle.nw"
+#line 3785 "cycle.nw"
 void cycle2D::archive(archive_node &n) const
 {
 	inherited::archive(n);
@@ -861,7 +872,18 @@ int cycle2D::compare_same_type(const basic &other) const
 
 //const char *cycle2D::get_class_name() { return "cycle2D"; }
 
-#line 3797 "cycle.nw"
+#line 3808 "cycle.nw"
+ex cycle2D::real_part() const
+{
+	return cycle2D(k.real_part(),lst(get_l(0).real_part(),get_l(1).real_part()),m.real_part(),unit);
+}
+
+ex cycle2D::imag_part() const
+{
+	return cycle2D(k.imag_part(),lst(get_l(0).imag_part(),get_l(1).imag_part()),m.imag_part(),unit);
+}
+
+#line 3829 "cycle.nw"
 ex cycle2D::focus(const ex & e, bool return_matrix) const
 {
 	lst f=lst(//jump_fnct(-get_metric(varidx(0, 2), varidx(0, 2)))*
@@ -870,7 +892,7 @@ ex cycle2D::focus(const ex & e, bool return_matrix) const
 	return (return_matrix? (ex)matrix(2, 1, f) : (ex)f);
 }
 
-#line 3807 "cycle.nw"
+#line 3839 "cycle.nw"
 lst cycle2D::roots(const ex & y, bool first) const
 {
  ex D = get_dim();
@@ -885,7 +907,7 @@ lst cycle2D::roots(const ex & y, bool first) const
  }
 }
 
-#line 3823 "cycle.nw"
+#line 3855 "cycle.nw"
 lst cycle2D::line_intersect(const ex & a, const ex & b) const
 {
  ex D = get_dim();
@@ -893,11 +915,11 @@ lst cycle2D::line_intersect(const ex & a, const ex & b) const
  return cycle2D(k*(numeric(1)+pm*pow(a,2)).normal(), lst((get_l(0)+get_l(1)*a-pm*a*b).normal(), 0), (m-2*get_l(1)*b+pm*pow(b,2)).normal()).roots();
 }
 
-#line 3836 "cycle.nw"
+#line 3868 "cycle.nw"
 inline ex max(const ex &a, const ex &b) {return ex_to<numeric>((a-b).evalf()).is_positive()?a:b;}
 inline ex min(const ex &a, const ex &b) {return ex_to<numeric>((a-b).evalf()).is_positive()?b:a;}
 
-#line 3841 "cycle.nw"
+#line 3873 "cycle.nw"
 #define PAIR(X, Y)  ex_to<numeric>((X).evalf()).to_double() << "," << \
    ex_to<numeric>((Y).evalf()).to_double()
 #define DRAW_ARC(X, S)   u = ex_to<numeric>((X).evalf()).to_double(); \
@@ -909,7 +931,7 @@ inline ex min(const ex &a, const ex &b) {return ex_to<numeric>((a-b).evalf()).is
     else                \
      ost << S <<  v << "," << u << "){" << (sign == 0? dv : -dv) << "," << (sign == 0? du : -du) << "}";
 
-#line 3854 "cycle.nw"
+#line 3886 "cycle.nw"
 bool is_almost_zero(const ex & x)
 {
 	if (is_a<numeric>(x))
@@ -918,7 +940,7 @@ bool is_almost_zero(const ex & x)
 		return x.is_zero();
 }
 
-#line 3864 "cycle.nw"
+#line 3896 "cycle.nw"
 bool is_almost_negative(const ex & x)
 {
 	if (is_a<numeric>(x))
@@ -927,7 +949,7 @@ bool is_almost_negative(const ex & x)
 		return x.is_zero();
 }
 
-#line 3874 "cycle.nw"
+#line 3906 "cycle.nw"
 void cycle2D::metapost_draw(ostream & ost, const ex & xmin, const ex & xmax, const ex & ymin, const ex & ymax,
  const lst & color, const string more_options, bool with_header,
  int points_per_arc, bool asymptote, const string picture, bool only_path,
@@ -941,7 +963,7 @@ void cycle2D::metapost_draw(ostream & ost, const ex & xmin, const ex & xmax, con
  draw_options.flags(keep_flags); // Synchronise flags between the streams
  draw_options.precision(ost.precision()); // Synchronise flags between the streams
 
-#line 3890 "cycle.nw"
+#line 3922 "cycle.nw"
  ost << fixed;
  draw_options << fixed;
  if (color.nops() == 3) {
@@ -965,7 +987,7 @@ void cycle2D::metapost_draw(ostream & ost, const ex & xmin, const ex & xmax, con
  }
  draw_options << (asymptote ? ");" : ";") << endl;
 
-#line 3916 "cycle.nw"
+#line 3948 "cycle.nw"
  if (with_header)
   ost << (asymptote ? "// Asymptote" : "% Metapost") << " data in [" << xmin << ","
    << xmax << "]x[" << ymin << ","
@@ -978,22 +1000,24 @@ m.is_zero()) {
   return;
  }
 
-#line 3932 "cycle.nw"
+#line 3964 "cycle.nw"
 	ex xc = center().op(0).evalf(), yc = center().op(1).evalf(); // the center of cycle
-double sign0 = ex_to<numeric>(-get_metric(varidx(0, D), varidx(0, D)).evalf()).to_double(),
+	double sign0 = ex_to<numeric>(-get_metric(varidx(0, D), varidx(0, D)).evalf()).to_double(),
 	sign1 = ex_to<numeric>(-get_metric(varidx(1, D), varidx(1, D)).evalf()).to_double(),
 	sign = sign0 * sign1;
-double determinant = ex_to<numeric>(radius_sq().evalf()).to_double();
- double epsilon=0.0000000001;
- bool not_swapped = (sign>0 || sign1==0 || ((sign <0) && (determinant < epsilon)));
-double signu = (not_swapped?sign0:sign1), signv = (not_swapped?sign1:sign0);
-int iu = (not_swapped?0:1), iv = (not_swapped?1:0);
-ex umin =  (not_swapped ? xmin : ymin), umax =  (not_swapped ? xmax : ymax),
-	vmin =  (not_swapped ? ymin:  xmin), vmax =  (not_swapped ? ymax : xmax),
-	uc =  (not_swapped ? xc:  yc), vc =  (not_swapped ? yc : xc);
-lst b_roots = roots(vmin, not_swapped), t_roots = roots(vmax, not_swapped);
+	double determinant = ex_to<numeric>(radius_sq().evalf()).to_double();
+	double epsilon=0.0000000001;
+	bool not_swapped = (sign>0 || sign1==0 || ((sign <0) && (determinant < epsilon)));
+	double signu = (not_swapped?sign0:sign1), signv = (not_swapped?sign1:sign0);
+	int iu = (not_swapped?0:1), iv = (not_swapped?1:0);
+	ex umin =  (not_swapped ? xmin : ymin), umax =  (not_swapped ? xmax : ymax),
+		vmin =  (not_swapped ? ymin:  xmin), vmax =  (not_swapped ? ymax : xmax),
+		uc =  (not_swapped ? xc:  yc), vc =  (not_swapped ? yc : xc);
+	lst b_roots = roots(vmin, not_swapped), t_roots = roots(vmax, not_swapped);
 
-#line 3964 "cycle.nw"
+#line 3982 "cycle.nw"
+	
+#line 3997 "cycle.nw"
 if (b_roots.nops() != 2) { // a linear object
 	if (get_k().is_zero() && get_l(0).is_zero() && get_l(1).is_zero()) {
 		if (with_header)
@@ -1011,7 +1035,7 @@ if (b_roots.nops() != 2) { // a linear object
 		u2 = umax;
 	}
 
-#line 3983 "cycle.nw"
+#line 4016 "cycle.nw"
 if (get_l(iv).is_zero()) { // a vertical line
 	if (ex_to<numeric>((b_roots.op(0)- umin).evalf()).is_positive()
 		&& ex_to<numeric>((umax-b_roots.op(0)).evalf()).is_positive()) {
@@ -1022,7 +1046,7 @@ if (get_l(iv).is_zero()) { // a vertical line
 		return;
 	}
 
-#line 3995 "cycle.nw"
+#line 4028 "cycle.nw"
 } else {
 	v1 = roots(u1, !not_swapped).op(0);
 	v2 = roots(u2, !not_swapped).op(0);
@@ -1032,7 +1056,7 @@ if (get_l(iv).is_zero()) { // a vertical line
 	}
 }
 
-#line 4006 "cycle.nw"
+#line 4039 "cycle.nw"
 ost <<  (only_path ? already_drawn : draw_start.str()) << PAIR(not_swapped ? u1: v1, not_swapped ? v1: u1)
 	<< ")--(" << PAIR(not_swapped ? u2: v2, not_swapped ? v2: u2) << ")"
 																	 << (only_path ? "" : draw_options.str());
@@ -1043,11 +1067,104 @@ ost.flags(keep_flags);
 return;
 }
 
-#line 4019 "cycle.nw"
+#line 3983 "cycle.nw"
+	
+#line 4075 "cycle.nw"
+	if (! (uc.imag_part().is_zero() && vc.imag_part().is_zero())) {
+		realsymbol x1("x1"), y1("y1");
+		cycle2D CI=ex_to<cycle2D>(ex_to<cycle2D>(evalf()).normalize().imag_part());
+		lst sol=ex_to<lst>(lsolve(lst(CI.val(lst(x1,y1))==0), lst(x1,y1)));
+
+#line 4082 "cycle.nw"
+		CI=ex_to<cycle2D>(ex_to<cycle2D>(evalf()).normalize().real_part());
+		ex eq=(CI.val(lst(x1,y1)).subs(sol)).normal();
+		ex t=(eq.has(x1)?x1:y1),  s=(eq.has(x1)?y1:x1);
+		ex A, B, C;
+		A=eq.coeff(ex_to<symbol>(t),2);
+		B=eq.coeff(ex_to<symbol>(t),1);
+		C=eq.coeff(ex_to<symbol>(t),0);
+
+#line 4092 "cycle.nw"
+		double D=ex_to<numeric>((B*B-4*A*C).evalf()).to_double();
+		if (D>=0){
+			if (with_header)
+				ost << endl << "// imaginary coefficients, the intersection with the real plane is dots only";
+
+#line 4099 "cycle.nw"
+			for(int i=-1; i<2; i+=2) {
+				double t1= ex_to<numeric>(((-B+i*sqrt(ex_to<numeric>(D)))/2/A).evalf()).to_double();
+				exmap em;
+				em.insert(std::make_pair(t, t1));
+				ex s1=s.subs(sol.subs(em));
+				uc=(eq.has(x1)? t1 : s1);
+				vc=(eq.has(x1)? s1 : t1);
+
+#line 4110 "cycle.nw"
+				if (abs(ex_to<numeric>(val(lst(uc,vc)).evalf()).to_double()) < epsilon) {
+					if (asymptote)
+						draw_options.str(",rgb(0,.9,0)+4pt);");
+					else
+						draw_options.str(" withcolor .9*green withpen pencircle scaled 4pt;");
+					ost << endl;
+					{
+#line 4227 "cycle.nw"
+	double U=ex_to<numeric>(uc.evalf()).to_double();
+	double V=ex_to<numeric>(vc.evalf()).to_double();
+	if ((umin <=U) && (umax>=U) && (vmin<=V) && (vmax>=V)) {
+		ost << (asymptote ? (only_path ? already_drawn : "dot(") : "draw " ) << picture << (picture.size()==0? "" : ",")
+			<< (only_path ? "" : "(")
+			<< PAIR(uc, vc) << ")" << (only_path ? "" : draw_options.str());
+	already_drawn="^^(";
+
+#line 4237 "cycle.nw"
+	} else
+		if (with_header)
+			ost << "// the vertex is out of range" << endl;
+
+#line 4116 "cycle.nw"
+                     }
+					if (asymptote)
+						draw_options.str(",rgb(0,0,0)+2pt);");
+					else
+						draw_options.str(" withcolor 0*green withpen pencircle scaled 2pt;");
+					ost << endl;
+					{
+#line 4227 "cycle.nw"
+	double U=ex_to<numeric>(uc.evalf()).to_double();
+	double V=ex_to<numeric>(vc.evalf()).to_double();
+	if ((umin <=U) && (umax>=U) && (vmin<=V) && (vmax>=V)) {
+		ost << (asymptote ? (only_path ? already_drawn : "dot(") : "draw " ) << picture << (picture.size()==0? "" : ",")
+			<< (only_path ? "" : "(")
+			<< PAIR(uc, vc) << ")" << (only_path ? "" : draw_options.str());
+	already_drawn="^^(";
+
+#line 4237 "cycle.nw"
+	} else
+		if (with_header)
+			ost << "// the vertex is out of range" << endl;
+
+#line 4122 "cycle.nw"
+                     }
+				} else {
+					std::cerr << "Calculation of dots in imaginary cycle gives wrong result!" << std::endl;
+				}
+			}
+
+#line 4130 "cycle.nw"
+	} else
+		if (with_header)
+			ost << endl << "// imaginary coefficients, no intersection with the real plane" << endl;
+	ost << endl;
+	return;
+}
+
+#line 3984 "cycle.nw"
+	
+#line 4052 "cycle.nw"
 ex left[2] = {max(min(uc, umax), umin),
 			  max(min(uc, umax), umin)},
-    right[2] = {max(min(uc, umax), umin),
-        max(min(uc, umax), umin)};
+		   right[2] = {max(min(uc, umax), umin),
+			  max(min(uc, umax), umin)};
 //if (!ex_to<numeric>((k*signu).evalf()).is_positive()) { // rearrange to have minimum value first
 //}
 if (ex_to<numeric>(b_roots.op(0).evalf()).is_real()) {
@@ -1063,23 +1180,23 @@ if (ex_to<numeric>(t_roots.op(0).evalf()).is_real()) {
 	right[1] = max(min(t_roots.op(1), umax), umin);
 }
 
-#line 3952 "cycle.nw"
+#line 3985 "cycle.nw"
 	if (sign > 0) { // elliptic metric
 		
-#line 4043 "cycle.nw"
+#line 4143 "cycle.nw"
 if (determinant > epsilon) {
  ex r = sqrt(radius_sq()), u[2][4], v[2][4];
  if (with_header)
   ost << " /circle of radius " << r  << endl;
 
-#line 4050 "cycle.nw"
+#line 4150 "cycle.nw"
  if (ex_to<numeric>((vc-vmax).evalf()).is_positive()) {
   u[0][2] = left[1]; u[0][3] = right[1];
   u[1][2] = left[0]; u[1][3] = right[0];
   u[0][0] = u[1][0] = uc;
   u[0][1] = u[1][1] = uc;
 
-#line 4058 "cycle.nw"
+#line 4158 "cycle.nw"
  } else if (ex_to<numeric>((vc-vmin).evalf()).is_positive()) {
   u[0][0] = left[1]; u[0][1] = right[1]; u[0][2] = right[0]; u[0][3] = left[0];
   if (ex_to<numeric>((uc-r-umin).evalf()).is_positive())
@@ -1092,7 +1209,7 @@ if (determinant > epsilon) {
   else
    u[1][1] = u[1][2] = umax;
 
-#line 4072 "cycle.nw"
+#line 4172 "cycle.nw"
  } else {
   u[0][0] = left[1]; u[0][1] = right[1];
   u[1][0] = left[0]; u[1][1] = right[0];
@@ -1101,7 +1218,7 @@ if (determinant > epsilon) {
  }
 
 
-#line 4083 "cycle.nw"
+#line 4183 "cycle.nw"
  lst y_roots;
  for (int j=0; j<2; j++)
   for (int i=0; i<4; i++)
@@ -1120,7 +1237,7 @@ if (determinant > epsilon) {
      v[j][i] = vc;
    }
 
-#line 4105 "cycle.nw"
+#line 4205 "cycle.nw"
  for (int i=0; i<4; i++) {// actual drawing of four arcs
   int s = (i==0 || i ==2? -1:1);
   if ((u[0][i] != u[1][i]) || (v[0][i] != v[1][i])) {// do not draw empty arc
@@ -1133,12 +1250,12 @@ if (determinant > epsilon) {
   }
  }
 
-#line 4120 "cycle.nw"
+#line 4220 "cycle.nw"
 } else if (is_almost_zero(radius_sq())) {
 	if (with_header)
 		ost << " /circle of zero-radius" << endl;
 	
-#line 4127 "cycle.nw"
+#line 4227 "cycle.nw"
 	double U=ex_to<numeric>(uc.evalf()).to_double();
 	double V=ex_to<numeric>(vc.evalf()).to_double();
 	if ((umin <=U) && (umax>=U) && (vmin<=V) && (vmax>=V)) {
@@ -1147,21 +1264,21 @@ if (determinant > epsilon) {
 			<< PAIR(uc, vc) << ")" << (only_path ? "" : draw_options.str());
 	already_drawn="^^(";
 
-#line 4137 "cycle.nw"
+#line 4237 "cycle.nw"
 	} else
 		if (with_header)
 			ost << "// the vertex is out of range" << endl;
 
 
-#line 4143 "cycle.nw"
+#line 4243 "cycle.nw"
 } else
 	if (with_header)
 		ost << " /circle of imaginary radius--not drawing" << endl;
 
-#line 3954 "cycle.nw"
+#line 3987 "cycle.nw"
 			} else { // parabolic or hyperbolic  metric
 		
-#line 4150 "cycle.nw"
+#line 4250 "cycle.nw"
 double u, v, du, dv, k_d = ex_to<numeric>(k.evalf()).to_double(),
                  lu = ex_to<numeric>(get_l(iu).evalf()).to_double(),
                  lv = ex_to<numeric>(get_l(iv).evalf()).to_double();
@@ -1171,7 +1288,7 @@ int zero_or_one = (sign == 0 || k_d*signv > 0 ? 0 : 1); // for parabola and posi
 
 if (sign == 0) {
  
-#line 4167 "cycle.nw"
+#line 4267 "cycle.nw"
 if (sign0 == 0 && get_l(0).is_zero()) {
 	if (with_header)
 		ost << " /parabola degenerated into two horizontal lines" << endl;
@@ -1184,7 +1301,7 @@ if (sign0 == 0 && get_l(0).is_zero()) {
 	ost.flags(keep_flags);
 	return;
 
-#line 4181 "cycle.nw"
+#line 4281 "cycle.nw"
 } else if (sign1 == 0 && get_l(1).is_zero()) {
 	if (with_header)
 		ost << " /parabola degenerated into two vertical lines" << endl;
@@ -1199,7 +1316,7 @@ if (sign0 == 0 && get_l(0).is_zero()) {
 }
 
 
-#line 4198 "cycle.nw"
+#line 4298 "cycle.nw"
 if (with_header)
 	ost << " /parabola" << endl;
  if (ex_to<numeric>((right[0]-left[0]).evalf()).is_positive() && ex_to<numeric>((right[1]-left[1]).evalf()).is_positive()) {
@@ -1210,7 +1327,7 @@ if (with_header)
 	}
  }
 
-#line 4217 "cycle.nw"
+#line 4317 "cycle.nw"
 for (int i =0; i < 2; i++) {
 	if (ex_to<numeric>((right[i]-left[i]).evalf()).is_positive()) { // a proper branch of a parabola
 		ex cp[8];
@@ -1226,7 +1343,7 @@ for (int i =0; i < 2; i++) {
 			cp[5] = (numeric(1,3)*cp[0]*k*cp[6]-numeric(1,3)*cp[0]*get_l(0)
 					 -numeric(2,3)*get_l(0)*cp[6]+numeric(1,6)*k*cp[6]*cp[6]+m/2)/get_l(1);
 
-#line 4234 "cycle.nw"
+#line 4334 "cycle.nw"
   } else {
 			cp[1] = left[i];
 			cp[0] = val(lst(0,cp[1]))/2/get_l(0);
@@ -1240,7 +1357,7 @@ for (int i =0; i < 2; i++) {
 					 -numeric(2,3)*get_l(1)*cp[7]+numeric(1,6)*k*cp[7]*cp[7]+m/2)/get_l(0);
   }
 
-#line 4249 "cycle.nw"
+#line 4349 "cycle.nw"
 	ost <<  (only_path ? already_drawn : draw_start.str()) << PAIR(cp[0], cp[1]) << ") .. controls (";
 if (asymptote)
 	ost <<  PAIR(cp[2], cp[3]) << ") and (" <<  PAIR(cp[4], cp[5]) << ") .. (";
@@ -1251,10 +1368,10 @@ already_drawn="^^(";
 	}
 }
 
-#line 4159 "cycle.nw"
+#line 4259 "cycle.nw"
 } else {
  
-#line 4262 "cycle.nw"
+#line 4362 "cycle.nw"
 if (abs(determinant)<epsilon) {
 	if (with_header)
 		ost << " / a light cone at (" << xc << "," << yc <<")" << endl;
@@ -1263,9 +1380,10 @@ if (abs(determinant)<epsilon) {
 	cycle2D(0, lst(1, -1), 2*(uc-vc), get_metric()).metapost_draw(ost, xmin, xmax, ymin, ymax, color, more_options,
 																  false, 0, asymptote, picture, only_path, true);
 
-#line 4272 "cycle.nw"
-   
-#line 4127 "cycle.nw"
+#line 4372 "cycle.nw"
+	if (! only_path) {
+		
+#line 4227 "cycle.nw"
 	double U=ex_to<numeric>(uc.evalf()).to_double();
 	double V=ex_to<numeric>(vc.evalf()).to_double();
 	if ((umin <=U) && (umax>=U) && (vmin<=V) && (vmax>=V)) {
@@ -1274,18 +1392,19 @@ if (abs(determinant)<epsilon) {
 			<< PAIR(uc, vc) << ")" << (only_path ? "" : draw_options.str());
 	already_drawn="^^(";
 
-#line 4137 "cycle.nw"
+#line 4237 "cycle.nw"
 	} else
 		if (with_header)
 			ost << "// the vertex is out of range" << endl;
 
-#line 4273 "cycle.nw"
-	if (with_header)
-		ost << endl;
+#line 4374 "cycle.nw"
+		if (with_header)
+			ost << endl;
+	}
 	ost.flags(keep_flags);
 	return;
 
-#line 4280 "cycle.nw"
+#line 4382 "cycle.nw"
 } else {
  if (with_header)
   ost << " /hyperbola" << endl;
@@ -1301,12 +1420,14 @@ if (abs(determinant)<epsilon) {
  }
 }
 
-#line 4297 "cycle.nw"
+#line 4399 "cycle.nw"
 int points = (points_per_arc == 0? 7 : points_per_arc);
 for (int i =0; i < 2; i++) {
 	double dir = ex_to<numeric>(csgn(signv*(2*zero_or_one-1))).to_double(); //direction of the tangent vectors
 	// double dir = ((sign == 0? lv : signv*(2*zero_or_one-1))<0?-1:1); direction of the tangent vectors (second alternative)
 	if (ex_to<numeric>((right[i]-left[i]).evalf()).is_positive()) { // a proper branch of the hyperbola
+
+#line 4408 "cycle.nw"
 		ex f_left=asinh((left[i]-uc)/sqrt(abs(determinant))),
 			f_right=asinh((right[i]-uc)/sqrt(abs(determinant)));
 		DRAW_ARC(sinh(f_left)*sqrt(abs(determinant))+uc, (only_path ? already_drawn : draw_start.str()));
@@ -1321,17 +1442,17 @@ for (int i =0; i < 2; i++) {
 		zero_or_one = 1 - zero_or_one; // make a swap for the next branch of hyperbola
  }
 
-#line 4161 "cycle.nw"
+#line 4261 "cycle.nw"
 }
 
-#line 3956 "cycle.nw"
+#line 3989 "cycle.nw"
 			}
 ost << endl;
 ost.flags(keep_flags);
 return;
 }
 
-#line 4327 "cycle.nw"
+#line 4433 "cycle.nw"
 //////////
 // Jump function
 //////////
@@ -1348,7 +1469,7 @@ static ex jump_fnct_evalf(const ex & arg)
  return jump_fnct(arg).hold();
 }
 
-#line 4345 "cycle.nw"
+#line 4451 "cycle.nw"
 static ex jump_fnct_eval(const ex & arg)
 {
  if (is_exactly_a<numeric>(arg)) {
@@ -1371,13 +1492,13 @@ static ex jump_fnct_eval(const ex & arg)
  return jump_fnct(arg).hold();
 }
 
-#line 4369 "cycle.nw"
+#line 4475 "cycle.nw"
 static ex jump_fnct_conjugate(const ex & arg)
 {
  return jump_fnct(arg);
 }
 
-#line 4376 "cycle.nw"
+#line 4482 "cycle.nw"
 static ex jump_fnct_power(const ex & arg, const ex & exp)
 {
  if (is_a<numeric>(exp) && ex_to<numeric>(exp).is_integer()) {
@@ -1391,7 +1512,7 @@ static ex jump_fnct_power(const ex & arg, const ex & exp)
  return ex_to<basic>(pow(jump_fnct(arg), exp)).hold();
 }
 
-#line 4391 "cycle.nw"
+#line 4497 "cycle.nw"
 static void jump_fnct_print_dflt_text(const ex & x, const print_context & c)
 {
  c.s << "H("; x.print(c); c.s << ")";
@@ -1402,7 +1523,7 @@ static void jump_fnct_print_latex(const ex & x, const print_context & c)
  c.s << "\\chi("; x.print(c); c.s << ")";
 }
 
-#line 4403 "cycle.nw"
+#line 4509 "cycle.nw"
 REGISTER_FUNCTION(jump_fnct, eval_func(jump_fnct_eval).
       evalf_func(jump_fnct_evalf).
       latex_name("\\chi").
@@ -1413,7 +1534,7 @@ REGISTER_FUNCTION(jump_fnct, eval_func(jump_fnct_eval).
       power_func(jump_fnct_power).
       conjugate_func(jump_fnct_conjugate));
 
-#line 4415 "cycle.nw"
+#line 4521 "cycle.nw"
 const string equality(const ex & E)
 {
  if (normal(E).is_zero())
@@ -1422,7 +1543,7 @@ const string equality(const ex & E)
   return "DIFFERENT!!!";
 }
 
-#line 4425 "cycle.nw"
+#line 4531 "cycle.nw"
 const string eph_case(const numeric & sign)
 {
  if (numeric(sign-(-1)).is_zero())
@@ -1434,7 +1555,7 @@ const string eph_case(const numeric & sign)
  return "Unknown case!!!!";
 }
 
-#line 4439 "cycle.nw"
+#line 4545 "cycle.nw"
 matrix sl2_clifford(const ex & a, const ex & b, const ex & c, const ex & d, const ex & e, bool not_inverse)
 {
  if (is_a<clifford>(e)) {
@@ -1452,7 +1573,7 @@ matrix sl2_clifford(const ex & a, const ex & b, const ex & c, const ex & d, cons
   throw(std::invalid_argument("sl2_clifford(): expect a clifford numeber as a parameter"));
 }
 
-#line 4458 "cycle.nw"
+#line 4564 "cycle.nw"
 ex scalar_part(const ex & e) {
 	ex given=canonicalize_clifford(e.expand()), 
 		out=0, term;
@@ -1475,7 +1596,7 @@ ex scalar_part(const ex & e) {
 	}
 }
 
-#line 4482 "cycle.nw"
+#line 4588 "cycle.nw"
 matrix sl2_clifford(const ex & M, const ex & e, bool not_inverse)
 {
  if (is_a<matrix>(M) || M.info(info_flags::list))

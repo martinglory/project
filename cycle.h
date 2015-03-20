@@ -70,16 +70,14 @@ class cycle : public basic
 
  cycle(const matrix & M, const ex & metr, const ex & e = 0, const ex & sign = 0);
 
- // internal constructors
- //cycle(const ex & k1, const ex & l1, const ex & m1, const ex & metr, const exvector & v, bool discardable = false);
- //cycle(const ex & k1, const ex & l1, const ex & m1, const ex & metr, std::auto_ptr<exvector> vp);
  #if GINAC_VERSION_ATLEAST(1,5)
- 								  // cycle(const archive_node &n, lst &sym_lst);
   void archive(archive_node &n) const;
-  // ex unarchive(const archive_node &n, lst &sym_lst);
   void read_archive(const archive_node &n, lst &sym_lst);
   return_type_t return_type_tinfo() const;
  #endif
+
+ ex real_part() const;
+ ex imag_part() const;
 
  protected:
   void do_print(const print_dflt & c, unsigned level) const;
@@ -253,6 +251,8 @@ class cycle2D : public cycle
   // ex unarchive(const archive_node &n, lst &sym_lst);
   void read_archive(const archive_node &n, lst &sym_lst);
 
+ ex real_part() const;
+ ex imag_part() const;
 
 };
 GINAC_DECLARE_UNARCHIVER(cycle2D);

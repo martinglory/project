@@ -33,6 +33,9 @@
 #define REAL_LINE_GEN -1
 #define INFINITY_GEN -2
 #define GHOST_GEN -3
+using PEVAL = std::function<ex(const ex &)>;
+
+using PCR = std::function<ex(const ex &, const ex &)>;
 class cycle2D_data : public basic
 {
 GINAC_DECLARE_REGISTERED_CLASS(cycle2D_data, basic)
@@ -46,6 +49,9 @@ public:
 	cycle2D_data(const ex & C);
  	cycle2D_data(const ex & k1, const ex l1, const ex &m1, bool normalize=false);
 	ex get_cycle2D(const ex & metr) const;
+	inline size_t nops() const { return 3; }
+	ex op(size_t i) const;
+	ex & let_op(size_t i);
 	inline ex get_k() const { return k; }
 	inline ex get_l() const { return l; }
 	inline ex get_l(size_t i) const { return l.op(0).op(i); }
@@ -78,12 +84,13 @@ protected:
 	int generation;
 	lst children; // List of keys to cycle2D_nodes
 	lst parents; // List of cycle_relations or a list containing a single subfigure
-	string custom_asy; // Custom string fro Asymptote
+	string custom_asy; // Custom string for Asymptote
 
 public:
 	cycle2D_node(const ex & C, int g=0);
 	cycle2D_node(const ex & C, int g, const lst & par);
-	cycle2D_node(const ex & C, int g, const lst & par,  const lst & chil);
+	cycle2D_node(const ex & C, int g, const lst & par, const lst & chil);
+	cycle2D_node(const ex & C, int g, const lst & par, const lst & chil, string ca);
 	cycle2D_node subs(const ex & e, unsigned options=0) const;
 	ex subs(const exmap & m, unsigned options=0) const;
 
@@ -112,6 +119,9 @@ protected:
 
 	inline void set_asy_opt(const string opt)  {custom_asy=opt;}
 
+	inline size_t nops() const { return cycles.nops()+children.nops()+parents.nops(); }
+	ex op(size_t i) const;
+	ex & let_op(size_t i);
 	void do_print(const print_dflt & con, unsigned level) const;
 	void do_print_tree(const print_tree & con, unsigned level) const;
 protected:
@@ -124,7 +134,6 @@ friend class figure;
 };
 GINAC_DECLARE_UNARCHIVER(cycle2D_node);
 
-using PCR = std::function<ex(const ex &, const ex &)>;
 
 class cycle_relation  : public basic
 {
@@ -149,6 +158,10 @@ protected:
 
         void archive(archive_node &n) const;
         void read_archive(const archive_node &n, lst &sym_lst);
+
+	inline size_t nops() const { return 1; }
+	ex op(size_t i) const;
+	ex & let_op(size_t i);
 
 friend class cycle2D_node;
 friend class figure;
@@ -209,82 +222,95 @@ class figure : public basic
 {
 GINAC_DECLARE_REGISTERED_CLASS(figure, basic)
 
-public:
-	ex real_line, // the key for the real line
-        infinity; // the key for cycle at infinity
 protected:
+ ex real_line, // the key for the real line
+	  infinity; // the key for cycle at infinity
 	ex point_metric; // The metric of the point space encoded as a clifford_unit object
-        ex cycle_metric; // The metric of the cycle space encoded as a clifford_unit object
-        exhashmap<cycle2D_node> nodes; // List of cycle2D_node, exhashmap<cycle2D_node> object
-        ex k, l, n, m; // realsymbols for symbolic calculations
+	ex cycle_metric; // The metric of the cycle space encoded as a clifford_unit object
+
+	exhashmap<cycle2D_node> nodes; // List of cycle2D_node, exhashmap<cycle2D_node> object
+
+	bool float_evaluation=false;
+
+	ex k, l, n, m; // realsymbols for symbolic calculations
 
 protected:
 	//update all children of cycle2D_node c (when c is changed)
-ex update_cycle2D_node(const ex & key, const lst & eq_cond=lst(),
+	ex update_cycle2D_node(const ex & key, const lst & eq_cond=lst(),
 						   const lst & neq_cond=lst(), lst res=lst(), unsigned int level=0);
-void set_cycle2D(const ex & key, const ex & C);
-ex evaluate_cycle(const ex & symbolic, const lst & cond) const;
+	void set_cycle2D(const ex & key, const ex & C);
+	ex evaluate_cycle(const ex & symbolic, const lst & cond) const;
 
 public:
+	figure(const ex & Mp, const ex & Mc=0);
+	void set_metric(const ex & Mp, const ex & Mc=0);
+	figure(const ex & Mp, const ex & Mc, const exhashmap<cycle2D_node> & N);
+	void reset_figure();
+	ex add_point(const ex & x, const ex & y, string name, string TeXname="");
+	ex add_point(const ex & x, const ex & y, const ex & key);
+	ex add_cycle2D(const ex & C, string name, string TeXname="");
+	ex add_cycle2D(const ex & C, const ex & key);
+	ex add_cycle_rel(const lst & rel, string name, string TeXname="");
+	ex add_cycle_rel(const lst & rel, const ex & key);
+	ex add_subfigure(const ex & F, const lst & L, string name, string TeXname="");
+	ex add_subfigure(const ex & F, const lst & L, const ex & key);
+	void move_point(const ex & key, const ex & x, const ex & y);
+	void move_cycle2D(const ex & key, const ex & C);
+	void remove_cycle2D_node(const ex & key);
+	ex get_cycle2D_label(string name) const;
+	ex check_rel(const ex & key1, const ex & key2, PCR rel, bool use_cycle_metric=true) const;
+	ex apply(PEVAL func, bool use_cycle_metric=true) const;
+	void asy_draw(ostream & ost =std::cout, ostream & err=std::cerr, const string picture="",
+				  const ex & xmin = -5, const ex & xmax = 5,
+				  const ex & ymin = -5, const ex & ymax = 5,
+				  asy_style style=default_asy, label_string lstring=default_label,
+				  bool with_realline=true, bool with_header = true,
+				  int points_per_arc = 0) const;
+	void asy_write(int size=300, const ex & xmin = -5, const ex & xmax = 5,
+				  const ex & ymin = -5, const ex & ymax = 5,
+				  string name="figure-view-tmp", string format="eps",
+				  asy_style style=default_asy, label_string lstring=default_label,
+				  bool with_realline=true, bool with_header = true,
+				  int points_per_arc = 0, bool rm_asy_file=true) const;
+	void asy_animate(const ex & par, const ex &val,
+					 int size=300, const ex & xmin = -5, const ex & xmax = 5,
+					 const ex & ymin = -5, const ex & ymax = 5,
+					 string name="figure-animatecf-tmp", string format="pdf",
+					 asy_style style=default_asy, label_string lstring=default_label,
+					 bool with_realline=true, bool with_header = true,
+					 int points_per_arc = 0, bool rm_asy_file=true) const;
+	inline figure freeze() const {setflag(status_flags::expanded); return *this;}
+	inline figure unfreeze() const {clearflag(status_flags::expanded); return *this;}
+	inline figure set_float_eval() {float_evaluation=true; return *this;}
+	inline figure set_exact_eval() {float_evaluation=false; return *this;}
+	inline void set_asy_style(const ex & key, string opt) {nodes[key].set_asy_opt(opt);}
+	void save(const char* file_name, const char* fig_name="myfig");
+	figure(const char* file_name, string fig_name="myfig");
+		inline ex get_point_metric() const {return point_metric;}
+		inline ex get_cycle_metric() const {return cycle_metric;}
+		inline exhashmap<cycle2D_node> get_nodes() const {return nodes;}
+
+		ex get_cycle2D(const ex & k, bool use_point_metric=true) const;
+		inline size_t nops() const {return 4+nodes.size();}
+		ex op(size_t i) const;
+		//ex & let_op(size_t i);
+		ex evalf(int level=0) const;
+		figure subs(const ex & e, unsigned options=0) const;
+		void archive(archive_node &n) const;
+		void read_archive(const archive_node &n, lst &sym_lst);
+		bool info(unsigned inf) const;
+
 	inline ex get_cycle2D_node(const ex & k) {return nodes[k];}
 	inline ex get_real_line() const {return real_line;}
 	inline ex get_infinity() const {return infinity;}
-
-		figure(const ex & Mp, const ex & Mc=0);
-		void set_metric(const ex & Mp, const ex & Mc=0);
-		figure(const ex & Mp, const ex & Mc, const exhashmap<cycle2D_node> & N);
-		void reset_figure();
-		ex add_point(const ex & x, const ex & y, string  name, string  TeXname="");
-		ex add_point(const ex & x, const ex & y, const ex & key);
-		ex add_cycle2D(const ex & C, string  name, string  TeXname="");
-		ex add_cycle2D(const ex & C, const ex & key);
-		ex add_cycle_rel(const lst & rel, string name, string TeXname="");
-		ex add_cycle_rel(const lst & rel, const ex & key);
-		ex add_subfigure(const ex & F, const lst & L, string name, string TeXname="");
-		ex add_subfigure(const ex & F, const lst & L, const ex & key);
-		void move_point(const ex & key, const ex & x, const ex & y);
-		void move_cycle2D(const ex & key, const ex & C);
-		void remove_cycle2D_node(const ex & key);
-		ex get_cycle2D_label(string name) const;
-		ex check_rel(const ex & key1, const ex & key2, PCR rel, bool use_cycle_metric=true) const;
-		void asy_draw(ostream & ost =std::cout, ostream & err=std::cerr, const string picture="",
-					  const ex & xmin = -5, const ex & xmax = 5,
-					  const ex & ymin = -5, const ex & ymax = 5,
-					  asy_style style=default_asy, label_string lstring=default_label,
-					  bool with_realline=true, bool with_header = true, int points_per_arc = 0) const;
-		void asy_write(int size=300, const ex & xmin = -5, const ex & xmax = 5,
-					  const ex & ymin = -5, const ex & ymax = 5,
-					  string name="figure-view-tmp", string format="eps",
-					  asy_style style=default_asy, label_string lstring=default_label,
-					  bool with_realline=true, bool with_header = true, int points_per_arc = 0) const;
-		inline void set_asy_style(const ex & key, string opt) {nodes[key].set_asy_opt(opt);}
-		void save(const char* file_name, const char* fig_name="myfig");
-		figure(const char* file_name, string fig_name="myfig");
-			inline ex get_point_metric() const {return point_metric;}
-		        inline ex get_cycle_metric() const {return cycle_metric;}
-			inline exhashmap<cycle2D_node> get_nodes() const {return nodes;}
-
-			ex get_cycle2D(const ex & k, bool use_point_metric=true) const;
-			inline size_t nops() const {return 4;}
-			ex op(size_t i) const;
-			figure subs(const ex & e, unsigned options=0) const;
-			void archive(archive_node &n) const;
-			void read_archive(const archive_node &n, lst &sym_lst);
-			bool info(unsigned inf) const;
-
-
-
 protected:
 	void do_print(const print_dflt & con, unsigned level) const;
 	return_type_t return_type_tinfo() const;
 
 	void update_node_lst(const ex & inlist);
-
-	void update_figure();
-
+	figure update_figure();
 };
 GINAC_DECLARE_UNARCHIVER(figure);
-
 class subfigure  : public basic
 {
 	GINAC_DECLARE_REGISTERED_CLASS(subfigure, basic)

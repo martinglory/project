@@ -4,6 +4,7 @@ How to compile the graphical user interface.
 2  add LIBS += -lcln -lginac -lcycle -lfigure -L./ into your .pro file
    add qmake_cxxflags = -std=gnu++11 into your .pro file
 3 qmake
-4 make
-5 ./"filename"
+4 remove figure.o from OBJECTS in Makefile
+5 make
+6 ./"filename"
 
