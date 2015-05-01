@@ -259,6 +259,11 @@ public:
 	void remove_cycle2D_node(const ex & key);
 	ex get_cycle2D_label(string name) const;
 	ex check_rel(const ex & key1, const ex & key2, PCR rel, bool use_cycle_metric=true) const;
+	inline ex get_point_metric() { return point_metric; }
+	inline ex get_cycle_metric() { return cycle_metric; }
+	inline ex get_cycles(const ex & k, bool use_point_metric=true) {
+		return get_cycles(k,use_point_metric?point_metric:cycle_metric);}
+	ex get_cycles(const ex & k, const ex & metric);
 	ex apply(PEVAL func, bool use_cycle_metric=true) const;
 	void asy_draw(ostream & ost =std::cout, ostream & err=std::cerr, const string picture="",
 				  const ex & xmin = -5, const ex & xmax = 5,

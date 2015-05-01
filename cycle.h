@@ -160,7 +160,7 @@ class cycle : public basic
      {return (cycle_product(C, e, sign) == 0);}
  ex is_f_orthogonal(const cycle & C, const ex & e = 0,
  				   const ex & sign = (new tensdelta)->setflag(status_flags::dynallocated),
- 				   const ex & sign1 = (new tensdelta)->setflag(status_flags::dynallocated),
+ 				   const ex & sign1 = 0,
  				   const ex & sign_inv = (new tensdelta)->setflag(status_flags::dynallocated)) const;
   inline ex is_linear() const {return (k == 0);}
   inline ex is_normalized() const {return (k == 1);}
