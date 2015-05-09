@@ -21,12 +21,16 @@ public:
 private:
 	bool m_pointA;
 	bool m_pointB;
+    bool m_pointC;
+    bool m_pointD;
 
 
 signals:
 	void signalCurrentPos(int x,int y);
 	void signalPointACreated(int x,int y);
 	void signalPointBCreated(int x,int y);
+    void signalPointCCreated(int x, int y);
+    void signalPointDCreated(int x, int y);
 
 
 };

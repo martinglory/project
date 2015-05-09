@@ -4,8 +4,8 @@
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
-	CoordinatePoint w;
+    QApplication a(argc, argv);
+    CoordinatePoint w;
 	w.show();
 	return a.exec();
 }

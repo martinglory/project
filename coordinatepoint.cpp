@@ -7,7 +7,9 @@
 #include <QTextStream>
 #include<QMessageBox>
 #include<QFile>
+#include<exception>
 using namespace std;
+using std::exception;
 
 CoordinatePoint::CoordinatePoint(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -18,6 +20,8 @@ CoordinatePoint::CoordinatePoint(QWidget *parent, Qt::WFlags flags)
 
 	ui.label_A->setHidden(true);
 	ui.label_B->setHidden(true);
+    ui.label_C->setHidden(true);
+    ui.label_D->setHidden(true);
 
 	ui.widgetC->setObjectName("cycle");
 	custom = new CustomPlotWidget;
@@ -38,9 +42,12 @@ CoordinatePoint::CoordinatePoint(QWidget *parent, Qt::WFlags flags)
 	connect(custom,SIGNAL(signalCurrentPos(int,int)),this,SLOT(slotShowCurrentPos(int,int)));
 	connect(custom,SIGNAL(signalPointACreated(int,int)),this,SLOT(slotShowPointA(int,int)));
 	connect(custom,SIGNAL(signalPointBCreated(int,int)),this,SLOT(slotShowPointB(int,int)));
+    connect(custom,SIGNAL(signalPointCCreated(int,int)),this,SLOT(slotShowPointC(int,int)));
+    connect(custom,SIGNAL(signalPointDCreated(int,int)),this,SLOT(slotShowPointD(int,int)));
+
 	connect(ui.pushButton_3,SIGNAL(clicked()),this,SLOT(slotParaShow()));
 	connect(ui.pushButtonplotCycle,SIGNAL(clicked()),this,SLOT(slotShowHello()));
-	connect(ui.pushButton_2,SIGNAL(clicked()),this,SLOT(slotShowU()));
+//	connect(ui.pushButton_2,SIGNAL(clicked()),this,SLOT(slotShowU()));
 	connect(ui.pushButtonClear,SIGNAL(clicked()),this,SLOT(slotClear()));
 
 }
@@ -53,7 +60,7 @@ if(m_pos)
     m_pos = NULL;
 }
 }
-//«Âø’µ±«∞ª≠ÕºΩÁ√Ê
+
 void CoordinatePoint::slotClear()
 {
 custom->clearGraphs();
@@ -62,24 +69,26 @@ custom->setStatusOfPoint();
 
 ui.label_A->setHidden(true);
 ui.label_B->setHidden(true);
+ui.label_C->setHidden(true);
+ui.label_D->setHidden(true);
 
 }
 //¡¨Ω”infinity
 void CoordinatePoint::slotShowU()
 {
-	//figure F;
 	//F->get_real_line();
 }
 
 void CoordinatePoint::slotShowHello()
 {
-	//ªÒ»°‘≤≤Œ ˝
 
 	ex A=F->add_point(Ax,Ay,"A");
 
 	ex B=F->add_point(Bx,By,"B");
     
+    ex C=F->add_point(Cx,Cy,"C");
     
+    ex D=F->add_point(Dx,Dy,"D");
     
     
     
@@ -88,7 +97,6 @@ void CoordinatePoint::slotShowHello()
     getParas();
 
     lst l;
-  //  l.remove_all();
     if(m_paraA.para1)
     l.append(is_orthogonal(A));
     if(m_paraA.para2)
@@ -104,7 +112,24 @@ void CoordinatePoint::slotShowHello()
     if(m_paraB.para3)
     	l.append(is_tangent(B));
     if(m_paraB.para4)
-	l.append(is_f_orthogonal(B));
+    	l.append(is_f_orthogonal(B));
+    if(m_paraC.para1)
+        l.append(is_orthogonal(C));
+    if(m_paraC.para2)
+        l.append(is_different(C));
+    if(m_paraC.para3)
+        l.append(is_tangent(C));
+    if(m_paraC.para4)
+        l.append(is_f_orthogonal(C));
+    
+    if(m_paraD.para1)
+        l.append(is_orthogonal(D));
+    if(m_paraD.para2)
+        l.append(is_different(D));
+    if(m_paraD.para3)
+        l.append(is_tangent(D));
+    if(m_paraD.para4)
+        l.append(is_f_orthogonal(D));
     if(m_paraR.para1)
     	l.append(is_orthogonal(F->get_real_line()));
     if(m_paraR.para2)
@@ -128,16 +153,19 @@ void CoordinatePoint::slotShowHello()
        !m_paraB.para1&&
        !m_paraB.para2&&
        !m_paraB.para3&&
-       !m_paraB.para4)
+       !m_paraB.para4&&
+       !m_paraC.para1&&
+       !m_paraC.para2&&
+       !m_paraC.para3&&
+       !m_paraC.para4
+       )
     {
         QMessageBox::warning(NULL,"error","Parameters have not been set!",
                              QMessageBox::Ok);
         return;
     }
-   ex a=F->add_cycle_rel(l,"a");
-    
-  // ex a=F->add_cycle_rel(lst(is_orthogonal(A),is_orthogonal(B),is_orthogonal(F->get_real_line())),"a");
-    
+    ex a=F->add_cycle_rel(l,"a");
+
     
 
 	ex L=F->get_cycles(a);
@@ -175,89 +203,198 @@ void CoordinatePoint::slotShowHello()
             
             cout << "Square of the radius is: " << ex_to<numeric>(C.radius_sq()).to_double() << endl;
             
+            
         }
-        
         
         fstream wri;
         wri.open("./para.txt",ios::out);
-        wri<<C.center().op(0)<<" "<<C.center().op(1)<<" "<<C.radius_sq()<<endl;
-
+        wri<<C.center().op(0)<<" "<<C.center().op(1)<<" "<<C.radius_sq()<<" "<<C.radius_sq().is_zero()<<" "<<C.get_k().is_zero()<<" "<<(C.get_m()/2).evalf() <<" "<<C.center() <<" "<< C.get_l(0).evalf()<<" "<<C.get_l(1).evalf()<< endl;
+        if(ex_to<numeric>(C.radius_sq()).to_double() < 0){
+            QMessageBox::warning(NULL,"error","Parameters have not been set!",
+                                 QMessageBox::Ok);}
 	}
 
-    float para[3] = {0};
+    float para[9] = {0};
     ifstream rea("./para.txt");
-    for(int i=0;i<3;i++)
+    for(int i=0;i<9;i++)
     {
         rea>>para[i];
     }
     
     center_x = para[0];
-    center_y = para[0];
+    center_y = para[1];
     m_radius = qSqrt(para[2]);
+    m_point = para[3];
+    m_line = para[4];
+    line = para[5];
+    point = para[6];
+    what = para[7];
+    why = para[8];
+
     
-    
-    QFile fileRead("./outpoint");
-    bool isop = fileRead.open(QIODevice::ReadOnly|QFile::Text);
-    QTextStream in(&fileRead);
-    QString str = "";
-    while(!in.atEnd())
+
+    if (m_point)
     {
-        str+=in.readLine();
+        QMessageBox::warning(NULL, "error","The radius of the cycle is improper!",
+                             QMessageBox::Ok);
+
+        QFile fileRead("./outpoint");
+        bool isop = fileRead.open(QIODevice::ReadOnly|QFile::Text);
+        QTextStream in(&fileRead);
+        QString str = "";
+        while(!in.atEnd())
+        {
+            str+=in.readLine();
+        }
+
+        fileRead.flush();
+        fileRead.close();
+
+        QFile fileReadc("./outcenter");
+        fileReadc.open(QIODevice::ReadOnly|QFile::Text);
+        QTextStream inc(&fileReadc);
+        QString strc = "";
+        while(!inc.atEnd())
+        {
+            strc+=inc.readLine();
+        }
+
+        fileReadc.flush();
+        fileReadc.close();
+
+        QString  string = str+"\n"+strc+"\n";
+        ui.label_4->adjustSize();
+        ui.label_4->setWordWrap(true);
+
+        ui.label_4->setText(string + QString("It is a point = {%1,%2}").arg(point).arg(point));
+
+        QVector<double> px0(1),py0(1);
+        for (int i=0; i<1; i++) {
+            px0[i] = point;
+            py0[i] = point;
+        }
+        custom->addGraph();
+        custom->graph()->setData(px0,py0);
+        custom->replot();
+
     }
-    
-    fileRead.flush();
-    fileRead.close();
-    
-    QFile fileReadc("./outcycle");
-    fileReadc.open(QIODevice::ReadOnly|QFile::Text);
-    QTextStream inc(&fileReadc);
-    QString strc = "";
-    while(!inc.atEnd())
+
+    else if(m_line)
     {
-        strc+=inc.readLine();
+        QFile fileRead("./outpoint");
+        bool isop = fileRead.open(QIODevice::ReadOnly|QFile::Text);
+        QTextStream in(&fileRead);
+        QString str = "";
+        while(!in.atEnd())
+        {
+            str+=in.readLine();
+        }
+
+        fileRead.flush();
+        fileRead.close();
+
+        QFile fileReadc("./outline");
+        fileReadc.open(QIODevice::ReadOnly|QFile::Text);
+        QTextStream inc(&fileReadc);
+        QString strc = "";
+        while(!inc.atEnd())
+        {
+            strc+=inc.readLine();
+        }
+
+        fileReadc.flush();
+        fileReadc.close();
+
+        QString  string = str+"\n"+strc+"\n";
+        ui.label_4->adjustSize();
+        ui.label_4->setWordWrap(true);
+
+        ui.label_4->setText(string + QString("The Line with the equation; %1*x+%2*y = %3 ").arg(center_x).arg(center_y).arg(line));
+
+        QVector<double> px(2),py(2);
+        for (int i=0;i<2; i++)
+        {
+            if (center_x == 0) {
+                px[0] = 10;
+                py[0] = line/center_y;
+                px[1] = -10;
+                py[1] = line/center_y;
+            }
+            else if(center_y == 0)
+            {
+                px[0] =  line/center_x;
+                py[0] = 10;
+                px[1] =  line/center_x;
+                py[1] = -10;
+            }
+            else{
+            px[0] = 10;
+            py[0] = (line - 10*center_x)/center_y ;
+            px[1] = -10;
+            py[1] = (line + 10*center_x)/center_y;
+            }
+        }
+        custom->addGraph();
+        custom->graph()->setData(px,py);
+        custom->replot();
     }
-    
-    fileReadc.flush();
-    fileReadc.close();
-    
-    QString  string = str+"\n"+strc+"\n";
-    ui.label_4->adjustSize();
-    ui.label_4->setWordWrap(true);
-    
-    ui.label_4->setText(string);
-    
-     //ui.label_4->setText(QString("center_x=%1\ncenter_y=%2\nradius=%3").arg(center_x).arg(center_y).arg(m_radius));
+
+    else{
+        QFile fileRead("./outpoint");
+        bool isop = fileRead.open(QIODevice::ReadOnly|QFile::Text);
+        QTextStream in(&fileRead);
+        QString str = "";
+        while(!in.atEnd())
+        {
+            str+=in.readLine();
+        }
+
+        fileRead.flush();
+        fileRead.close();
+
+        QFile fileReadc("./outcycle");
+        fileReadc.open(QIODevice::ReadOnly|QFile::Text);
+        QTextStream inc(&fileReadc);
+        QString strc = "";
+        while(!inc.atEnd())
+        {
+            strc+=inc.readLine();
+        }
+
+        fileReadc.flush();
+        fileReadc.close();
+
+        QString  string = str+"\n"+strc+"\n";
+        ui.label_4->adjustSize();
+        ui.label_4->setWordWrap(true);
+
+        ui.label_4->setText(string + QString("center of circle=(%1,%2)\nradius of circle=%3").arg(center_x).arg(center_y).arg(m_radius));
+
+        QVector<double> px(180),py(180);
+        for (int i=0;i<180;i++)
+        {
+            px[i] = m_radius*cos((double)i*PI/180) + center_x;
+            py[i] = m_radius*sin((double)i*PI/180) + center_y;
+        }
+        custom->addGraph();
+        custom->graph()->setData(px,py);
+        custom->replot();
 
 
-	QVector<double> px(180),py(180);
-	for (int i=0;i<180;i++)
-	{
-		px[i] = m_radius*cos((double)i*PI/180) + center_x;
-		py[i] = m_radius*sin((double)i*PI/180) + center_y;
-	}
-	custom->addGraph();
-	custom->graph()->setData(px,py);
-	custom->replot();
-    
-    printf("hate");
-    
 
 
-	QVector<double> px1(180),py1(180);
-	for (int i=180;i<360;i++)
-	{
-		px1[i-180] = m_radius*cos((double)i*PI/180) + center_x;
-		py1[i-180] = m_radius*sin((double)i*PI/180) + center_y;
-	}
-	custom->addGraph();
-	custom->graph()->setData(px1,py1);
-	custom->replot();
-    printf("love");
-
-
+        QVector<double> px1(180),py1(180);
+        for (int i=180;i<360;i++)
+        {
+            px1[i-180] = m_radius*cos((double)i*PI/180) + center_x;
+            py1[i-180] = m_radius*sin((double)i*PI/180) + center_y;
+        }
+        custom->addGraph();
+        custom->graph()->setData(px1,py1);
+        custom->replot();
+    }
 }
 
-//ÀÊ Û±Í“∆∂Øœ‘ æµ±«∞Œª÷√
 void CoordinatePoint::slotShowCurrentPos(int x,int y)
 {
 	float pos_x = getPosFromPixel(x,y)[0];
@@ -265,7 +402,7 @@ void CoordinatePoint::slotShowCurrentPos(int x,int y)
 		
 	ui.lineEdit->setText(QString("%1,%2").arg(pos_x,0,'f',2).arg(pos_y,0,'f',2));
 }
-//ÀÊ Û±Í“∆∂Øœ‘ æµ±«∞Œª÷√
+
 void CoordinatePoint::slotShowPointA(int x,int y)
 {
 	float pos_x = getPosFromPixel(x,y)[0];
@@ -301,6 +438,42 @@ void CoordinatePoint::slotShowPointB(int x,int y)
 
 	custom->replot();
 }
+void CoordinatePoint::slotShowPointC(int x,int y)
+{
+    
+    float pos_x = getPosFromPixel(x,y)[0];
+    float pos_y = getPosFromPixel(x,y)[1];
+    
+    ui.label_C->setHidden(false);
+    ui.label_C->setText(QString("C(%1,%2)").arg(pos_x,0,'f',2).arg(pos_y,0,'f',2));
+    ui.label_C->move(x+80,y+80);
+    ui.label_C->raise();
+    
+    plotPoint(pos_x,pos_y);
+    
+    Cx = pos_x;
+    Cy = pos_y;
+    
+    custom->replot();
+}
+void CoordinatePoint::slotShowPointD(int x,int y)
+{
+    
+    float pos_x = getPosFromPixel(x,y)[0];
+    float pos_y = getPosFromPixel(x,y)[1];
+    
+    ui.label_D->setHidden(false);
+    ui.label_D->setText(QString("D(%1,%2)").arg(pos_x,0,'f',2).arg(pos_y,0,'f',2));
+    ui.label_D->move(x+80,y+80);
+    ui.label_D->raise();
+    
+    plotPoint(pos_x,pos_y);
+    
+    Dx = pos_x;
+    Dy = pos_y;
+    
+    custom->replot();
+}
 
 void CoordinatePoint::plotPoint(float x,float y)
 {
@@ -333,16 +506,16 @@ float *CoordinatePoint::getPosFromPixel(int x,int y)
 	return m_pos;
 }
 
-//œ‘ æ≤Œ ˝—°‘Ò
 void CoordinatePoint::slotParaShow()
 {
 	para = new ParameterSettings;
 	para->exec();
 }
 
+
 void CoordinatePoint::getParas()
 {
-	para->getPara(m_paraA,m_paraB,m_paraR,m_paraI);
+    para->getPara(m_paraA,m_paraB,m_paraC,m_paraD,m_paraR,m_paraI);
 }
 
 

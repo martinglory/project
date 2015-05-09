@@ -29,6 +29,8 @@ public:
 	void slotShowCurrentPos(int x,int y);
 	void slotShowPointA(int x,int y);
 	void slotShowPointB(int x,int y);
+    void slotShowPointC(int x,int y);
+    void slotShowPointD(int x,int y);
 	void slotParaShow();
 
 private:
@@ -39,16 +41,32 @@ private:
 	ParameterSettings *para;
 	Apara m_paraA;
 	Bpara m_paraB;
+    Cpara m_paraC;
+    Dpara m_paraD;
     Rpara m_paraR;
     Ipara m_paraI;
     
 	float center_x;
 	float center_y;
 	float m_radius;
+    
+    float m_point;
+    float m_line;
+    float line;
+    float point;
+    
+    float what;
+    float why;
+
+
 	float Ax;
 	float Ay;
 	float Bx;
 	float By;
+    float Cx;
+    float Cy;
+    float Dx;
+    float Dy;
     float *m_pos;
     figure* F;
 

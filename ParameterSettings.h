@@ -13,7 +13,7 @@ public:
 	ParameterSettings();
 	~ParameterSettings();
 
-	void getPara(Apara &apara,Bpara &bpara,Rpara &rpara,Ipara &ipara);
+    void getPara(Apara &apara,Bpara &bpara,Cpara &cpara,Dpara &dpara,Rpara &rpara,Ipara &ipara);
 
 public slots:
 	void slotCloseParaWidget();

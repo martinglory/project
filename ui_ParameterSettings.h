@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'ParameterSettings.ui'
 **
-** Created: Fri May 1 17:19:36 2015
+** Created: Tue May 5 09:10:47 2015
 **      by: Qt User Interface Compiler version 4.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -41,6 +41,18 @@ public:
     QCheckBox *checkBox_3;
     QCheckBox *checkBox_2;
     QCheckBox *checkBox;
+    QGroupBox *groupBox_5;
+    QVBoxLayout *verticalLayout_5;
+    QCheckBox *checkBox_17;
+    QCheckBox *checkBox_18;
+    QCheckBox *checkBox_19;
+    QCheckBox *checkBox_20;
+    QGroupBox *groupBox_6;
+    QVBoxLayout *verticalLayout_6;
+    QCheckBox *checkBox_21;
+    QCheckBox *checkBox_22;
+    QCheckBox *checkBox_23;
+    QCheckBox *checkBox_24;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_3;
     QCheckBox *checkBox_9;
@@ -60,7 +72,7 @@ public:
     {
         if (Form->objectName().isEmpty())
             Form->setObjectName(QString::fromUtf8("Form"));
-        Form->resize(568, 362);
+        Form->resize(440, 362);
         gridLayout = new QGridLayout(Form);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         groupBox_2 = new QGroupBox(Form);
@@ -117,6 +129,60 @@ public:
 
         gridLayout->addWidget(groupBox, 0, 1, 1, 1);
 
+        groupBox_5 = new QGroupBox(Form);
+        groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
+        verticalLayout_5 = new QVBoxLayout(groupBox_5);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        checkBox_17 = new QCheckBox(groupBox_5);
+        checkBox_17->setObjectName(QString::fromUtf8("checkBox_17"));
+
+        verticalLayout_5->addWidget(checkBox_17);
+
+        checkBox_18 = new QCheckBox(groupBox_5);
+        checkBox_18->setObjectName(QString::fromUtf8("checkBox_18"));
+
+        verticalLayout_5->addWidget(checkBox_18);
+
+        checkBox_19 = new QCheckBox(groupBox_5);
+        checkBox_19->setObjectName(QString::fromUtf8("checkBox_19"));
+
+        verticalLayout_5->addWidget(checkBox_19);
+
+        checkBox_20 = new QCheckBox(groupBox_5);
+        checkBox_20->setObjectName(QString::fromUtf8("checkBox_20"));
+
+        verticalLayout_5->addWidget(checkBox_20);
+
+
+        gridLayout->addWidget(groupBox_5, 0, 2, 1, 2);
+
+        groupBox_6 = new QGroupBox(Form);
+        groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
+        verticalLayout_6 = new QVBoxLayout(groupBox_6);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        checkBox_21 = new QCheckBox(groupBox_6);
+        checkBox_21->setObjectName(QString::fromUtf8("checkBox_21"));
+
+        verticalLayout_6->addWidget(checkBox_21);
+
+        checkBox_22 = new QCheckBox(groupBox_6);
+        checkBox_22->setObjectName(QString::fromUtf8("checkBox_22"));
+
+        verticalLayout_6->addWidget(checkBox_22);
+
+        checkBox_23 = new QCheckBox(groupBox_6);
+        checkBox_23->setObjectName(QString::fromUtf8("checkBox_23"));
+
+        verticalLayout_6->addWidget(checkBox_23);
+
+        checkBox_24 = new QCheckBox(groupBox_6);
+        checkBox_24->setObjectName(QString::fromUtf8("checkBox_24"));
+
+        verticalLayout_6->addWidget(checkBox_24);
+
+
+        gridLayout->addWidget(groupBox_6, 1, 0, 1, 1);
+
         groupBox_3 = new QGroupBox(Form);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         verticalLayout_3 = new QVBoxLayout(groupBox_3);
@@ -142,7 +208,7 @@ public:
         verticalLayout_3->addWidget(checkBox_12);
 
 
-        gridLayout->addWidget(groupBox_3, 0, 2, 1, 1);
+        gridLayout->addWidget(groupBox_3, 1, 1, 1, 1);
 
         groupBox_4 = new QGroupBox(Form);
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
@@ -169,16 +235,16 @@ public:
         verticalLayout_4->addWidget(checkBox_16);
 
 
-        gridLayout->addWidget(groupBox_4, 0, 3, 1, 1);
+        gridLayout->addWidget(groupBox_4, 1, 2, 1, 2);
 
         horizontalSpacer = new QSpacerItem(328, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer, 1, 0, 1, 2);
+        gridLayout->addItem(horizontalSpacer, 2, 0, 1, 3);
 
         pushButtonSure = new QPushButton(Form);
         pushButtonSure->setObjectName(QString::fromUtf8("pushButtonSure"));
 
-        gridLayout->addWidget(pushButtonSure, 1, 3, 1, 1);
+        gridLayout->addWidget(pushButtonSure, 2, 3, 1, 1);
 
 
         retranslateUi(Form);
@@ -193,23 +259,33 @@ public:
         checkBox_5->setText(QApplication::translate("Form", "is_orthogonal", 0, QApplication::UnicodeUTF8));
         checkBox_6->setText(QApplication::translate("Form", "is_different", 0, QApplication::UnicodeUTF8));
         checkBox_7->setText(QApplication::translate("Form", "is_tangent", 0, QApplication::UnicodeUTF8));
-        checkBox_8->setText(QApplication::translate("Form", "is_f-orthogonal", 0, QApplication::UnicodeUTF8));
+        checkBox_8->setText(QApplication::translate("Form", "is_f_orthogonal", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("Form", "B", 0, QApplication::UnicodeUTF8));
         checkBox_4->setText(QApplication::translate("Form", "is_orthogonal", 0, QApplication::UnicodeUTF8));
         checkBox_3->setText(QApplication::translate("Form", "is_different", 0, QApplication::UnicodeUTF8));
         checkBox_2->setText(QApplication::translate("Form", "is_tangent", 0, QApplication::UnicodeUTF8));
-        checkBox->setText(QApplication::translate("Form", "is_f-orthogonal", 0, QApplication::UnicodeUTF8));
+        checkBox->setText(QApplication::translate("Form", "is_f_orthogonal", 0, QApplication::UnicodeUTF8));
+        groupBox_5->setTitle(QApplication::translate("Form", "C", 0, QApplication::UnicodeUTF8));
+        checkBox_17->setText(QApplication::translate("Form", "is_orthogonal", 0, QApplication::UnicodeUTF8));
+        checkBox_18->setText(QApplication::translate("Form", "is_different", 0, QApplication::UnicodeUTF8));
+        checkBox_19->setText(QApplication::translate("Form", "is_tangent", 0, QApplication::UnicodeUTF8));
+        checkBox_20->setText(QApplication::translate("Form", "is_f_orthogonal", 0, QApplication::UnicodeUTF8));
+        groupBox_6->setTitle(QApplication::translate("Form", "D", 0, QApplication::UnicodeUTF8));
+        checkBox_21->setText(QApplication::translate("Form", "is_orthogonal", 0, QApplication::UnicodeUTF8));
+        checkBox_22->setText(QApplication::translate("Form", "is_different", 0, QApplication::UnicodeUTF8));
+        checkBox_23->setText(QApplication::translate("Form", "is_tangent", 0, QApplication::UnicodeUTF8));
+        checkBox_24->setText(QApplication::translate("Form", "is_f_orthogonal", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("Form", "Get_real_line", 0, QApplication::UnicodeUTF8));
         checkBox_9->setText(QApplication::translate("Form", "is_orthogonal", 0, QApplication::UnicodeUTF8));
         checkBox_10->setText(QApplication::translate("Form", "is_different", 0, QApplication::UnicodeUTF8));
         checkBox_11->setText(QApplication::translate("Form", "is_tangent", 0, QApplication::UnicodeUTF8));
-        checkBox_12->setText(QApplication::translate("Form", "is_f-orthogonal", 0, QApplication::UnicodeUTF8));
+        checkBox_12->setText(QApplication::translate("Form", "is_f_orthogonal", 0, QApplication::UnicodeUTF8));
         groupBox_4->setTitle(QApplication::translate("Form", "Get_infinity", 0, QApplication::UnicodeUTF8));
         checkBox_13->setText(QApplication::translate("Form", "is_orthogonal", 0, QApplication::UnicodeUTF8));
         checkBox_14->setText(QApplication::translate("Form", "is_different", 0, QApplication::UnicodeUTF8));
         checkBox_15->setText(QApplication::translate("Form", "is_tangent", 0, QApplication::UnicodeUTF8));
-        checkBox_16->setText(QApplication::translate("Form", "is_f-orthogonal", 0, QApplication::UnicodeUTF8));
-        pushButtonSure->setText(QApplication::translate("Form", "Sure", 0, QApplication::UnicodeUTF8));
+        checkBox_16->setText(QApplication::translate("Form", "is_f_orthogonal", 0, QApplication::UnicodeUTF8));
+        pushButtonSure->setText(QApplication::translate("Form", "Accept", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
