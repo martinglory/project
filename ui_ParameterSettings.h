@@ -250,7 +250,7 @@ public:
         retranslateUi(Form);
 
         QMetaObject::connectSlotsByName(Form);
-    } // setupUi
+    } // set up parameter user interface
 
     void retranslateUi(QWidget *Form)
     {

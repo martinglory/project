@@ -72,8 +72,7 @@ ui.label_B->setHidden(true);
 ui.label_C->setHidden(true);
 ui.label_D->setHidden(true);
 
-}
-//¡¨Ω”infinity
+}// slot clear button
 void CoordinatePoint::slotShowU()
 {
 	//F->get_real_line();
@@ -164,7 +163,7 @@ void CoordinatePoint::slotShowHello()
                              QMessageBox::Ok);
         return;
     }
-    ex a=F->add_cycle_rel(l,"a");
+    ex a=F->add_cycle_rel(l,"a");// add parameter into cycle
 
     
 
@@ -179,7 +178,8 @@ void CoordinatePoint::slotShowHello()
             
             cout << "It is a point " << C.center() << endl;
             
-        } else if (C.get_k().is_zero()) {
+        }//point of cycle
+        else if (C.get_k().is_zero()) {
             
             cout << "It is a line with the equation ("
             
@@ -189,7 +189,8 @@ void CoordinatePoint::slotShowHello()
             
             << ex_to<numeric>((C.get_m()/2).evalf()).to_double() << endl;
             
-        } else {
+        }//line of  cycle
+        else {
             
             
             
@@ -204,7 +205,7 @@ void CoordinatePoint::slotShowHello()
             cout << "Square of the radius is: " << ex_to<numeric>(C.radius_sq()).to_double() << endl;
             
             
-        }
+        }// circle of cycle
         
         fstream wri;
         wri.open("./para.txt",ios::out);
@@ -277,7 +278,7 @@ void CoordinatePoint::slotShowHello()
         custom->graph()->setData(px0,py0);
         custom->replot();
 
-    }
+    }//draw point
 
     else if(m_line)
     {
@@ -337,7 +338,7 @@ void CoordinatePoint::slotShowHello()
         custom->addGraph();
         custom->graph()->setData(px,py);
         custom->replot();
-    }
+    }// draw line
 
     else{
         QFile fileRead("./outpoint");
@@ -392,7 +393,7 @@ void CoordinatePoint::slotShowHello()
         custom->addGraph();
         custom->graph()->setData(px1,py1);
         custom->replot();
-    }
+    }//draw circle
 }
 
 void CoordinatePoint::slotShowCurrentPos(int x,int y)
@@ -401,7 +402,7 @@ void CoordinatePoint::slotShowCurrentPos(int x,int y)
 	float pos_y = getPosFromPixel(x,y)[1];
 		
 	ui.lineEdit->setText(QString("%1,%2").arg(pos_x,0,'f',2).arg(pos_y,0,'f',2));
-}
+}// display mouse position
 
 void CoordinatePoint::slotShowPointA(int x,int y)
 {
@@ -418,7 +419,7 @@ void CoordinatePoint::slotShowPointA(int x,int y)
 	Ay = pos_y;
 
 	custom->replot();
-}
+}// create point A
 
 void CoordinatePoint::slotShowPointB(int x,int y)
 {
@@ -437,7 +438,7 @@ void CoordinatePoint::slotShowPointB(int x,int y)
 	By = pos_y;
 
 	custom->replot();
-}
+}//create point B
 void CoordinatePoint::slotShowPointC(int x,int y)
 {
     
@@ -455,7 +456,7 @@ void CoordinatePoint::slotShowPointC(int x,int y)
     Cy = pos_y;
     
     custom->replot();
-}
+}//create point C
 void CoordinatePoint::slotShowPointD(int x,int y)
 {
     
@@ -473,7 +474,7 @@ void CoordinatePoint::slotShowPointD(int x,int y)
     Dy = pos_y;
     
     custom->replot();
-}
+}//create point D
 
 void CoordinatePoint::plotPoint(float x,float y)
 {
@@ -489,7 +490,7 @@ void CoordinatePoint::plotPoint(float x,float y)
 	custom->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc));
 
 	custom->replot();
-}
+}// draw points
 
 float *CoordinatePoint::getPosFromPixel(int x,int y)
 {
@@ -504,18 +505,18 @@ float *CoordinatePoint::getPosFromPixel(int x,int y)
 	m_pos[1] =  10 - pos_y*20/353.0;
 
 	return m_pos;
-}
+}// define scope of coordinate system
 
 void CoordinatePoint::slotParaShow()
 {
 	para = new ParameterSettings;
 	para->exec();
-}
+}//slot parameter
 
 
 void CoordinatePoint::getParas()
 {
     para->getPara(m_paraA,m_paraB,m_paraC,m_paraD,m_paraR,m_paraI);
-}
+}// get parameters
 
 
